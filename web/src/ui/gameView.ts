@@ -105,10 +105,36 @@ function handleHandTap(card: Card): void {
   else if (state.mode === "selling") toggleHandForSale(card);
 }
 
+function copyCode(code: string): void {
+  navigator.clipboard?.writeText(code).catch(() => {
+    // Clipboard access can fail (e.g. non-HTTPS, permissions) - the code is
+    // already shown on screen, so there's nothing more useful to do here.
+  });
+}
+
+function waitingForOpponentView(code: string): HTMLElement {
+  return h(
+    "div",
+    { class: "game game--loading" },
+    h("p", {}, "Share this code with your opponent:"),
+    h(
+      "button",
+      { class: "game__code-big", type: "button", onclick: () => copyCode(code) },
+      code,
+      h("span", { class: "game__code-hint" }, "tap to copy")
+    ),
+    h("p", { class: "lobby__hint" }, "Waiting for them to join…"),
+    h("button", { class: "btn btn--secondary", type: "button", onclick: () => setActiveGameCode(null) }, "Leave")
+  );
+}
+
 export function gameView(): HTMLElement {
   const gameState = currentGameState();
 
   if (!gameState) {
+    if (state.gameDoc?.status === "waiting" && state.gameCode) {
+      return waitingForOpponentView(state.gameCode);
+    }
     return h(
       "div",
       { class: "game game--loading" },
