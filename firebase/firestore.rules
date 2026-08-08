@@ -13,7 +13,12 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     match /games/{code} {
-      allow read: if isSignedIn() && (isOpenLobby() || isPlayer());
+      // `resource == null` covers reading a code that doesn't exist yet -
+      // createGame() has to check that before writing, to avoid colliding
+      // with another in-flight game. Without this, isOpenLobby()/isPlayer()
+      // would dereference `resource.data` on a null resource and the whole
+      // rule would fail closed ("missing or insufficient permissions").
+      allow read: if isSignedIn() && (resource == null || isOpenLobby() || isPlayer());
 
       allow create: if isSignedIn()
         && request.resource.data.hostID == request.auth.uid
