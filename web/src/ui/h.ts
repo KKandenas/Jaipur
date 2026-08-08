@@ -21,7 +21,19 @@ export function h<K extends keyof HTMLElementTagNameMap>(
     if (key === "class") {
       el.className = String(value);
     } else if (key === "style" && typeof value === "object") {
-      Object.assign(el.style, value as Partial<CSSStyleDeclaration>);
+      // CSS custom properties (--foo) don't have a corresponding camelCase
+      // IDL attribute, so `el.style.foo = x` / Object.assign silently no-ops
+      // for them - they must go through setProperty(). Regular properties
+      // (width, backgroundColor, ...) still use direct assignment.
+      for (const [prop, val] of Object.entries(value as Record<string, unknown>)) {
+        if (val == null) continue;
+        if (prop.startsWith("--")) {
+          el.style.setProperty(prop, String(val));
+        } else {
+          // @ts-expect-error - dynamic camelCase CSS property assignment
+          el.style[prop] = val;
+        }
+      }
     } else if (key.startsWith("on") && typeof value === "function") {
       el.addEventListener(key.slice(2).toLowerCase(), value as EventListener);
     } else if (key === "disabled" || key === "checked" || key === "value") {
