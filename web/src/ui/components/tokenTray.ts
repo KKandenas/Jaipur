@@ -1,4 +1,7 @@
 import { SELLABLE_GOODS, type BonusTokenBank, type TokenBank } from "../../engine";
+import bonusThree from "../../assets/bonus/three.png";
+import bonusFour from "../../assets/bonus/four.png";
+import bonusFive from "../../assets/bonus/five.png";
 import { goodStyle } from "../goodStyle";
 import { h } from "../h";
 
@@ -25,19 +28,23 @@ export function tokenTrayView(tokenBank: TokenBank): HTMLElement {
 }
 
 export function bonusTokenSummaryView(bank: BonusTokenBank): HTMLElement {
-  const stack = (title: string, values: number[]) =>
+  const stack = (title: string, values: number[], tokenImage: string) =>
     h(
       "div",
       { class: "bonus-chip" },
       h("span", { class: "bonus-chip__title" }, title),
-      h("span", { class: "bonus-chip__value" }, values.length > 0 ? String(values[0]) : "—")
+      h(
+        "span",
+        { class: "bonus-chip__value", style: { "--card-image": `url(${tokenImage})` } },
+        values.length > 0 ? String(values[0]) : "—"
+      )
     );
 
   return h(
     "div",
     { class: "bonus-tray" },
-    stack("×3", bank.saleOfThree),
-    stack("×4", bank.saleOfFour),
-    stack("×5+", bank.saleOfFiveOrMore)
+    stack("×3", bank.saleOfThree, bonusThree),
+    stack("×4", bank.saleOfFour, bonusFour),
+    stack("×5+", bank.saleOfFiveOrMore, bonusFive)
   );
 }
