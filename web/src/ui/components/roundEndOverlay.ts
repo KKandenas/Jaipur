@@ -1,5 +1,10 @@
-import { findPlayer, roundResultTotal, type GameState, type RoundResult } from "../../engine";
+import { bonusTier, findPlayer, roundResultTotal, type GameState, type RoundResult } from "../../engine";
+import bonusThree from "../../assets/bonus/three.png";
+import bonusFour from "../../assets/bonus/four.png";
+import bonusFive from "../../assets/bonus/five.png";
 import { h } from "../h";
+
+const BONUS_TIER_IMAGE = { three: bonusThree, four: bonusFour, five: bonusFive };
 
 function bonusFlipRow(
   tokens: number[],
@@ -13,11 +18,13 @@ function bonusFlipRow(
     tokens.map((value, index) => {
       const key = `${roundNumber}-${index}`;
       const revealed = revealedKeys.has(key);
+      const tokenImage = BONUS_TIER_IMAGE[bonusTier(value)];
       return h(
         "button",
         {
           class: `bonus-flip-chip ${revealed ? "bonus-flip-chip--revealed" : ""}`,
           type: "button",
+          style: { "--card-image": `url(${tokenImage})` },
           title: revealed ? undefined : "Tap to reveal",
           onclick: () => onToggle(key)
         },

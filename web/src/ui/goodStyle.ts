@@ -9,11 +9,11 @@ import spiceCard from "../assets/cards/spice.jpg";
 import leatherCard from "../assets/cards/leather.jpg";
 
 import diamondToken from "../assets/tokens/diamond.png";
-import goldToken from "../assets/tokens/gold.jpg";
+import goldToken from "../assets/tokens/gold.png";
 import silverToken from "../assets/tokens/silver.png";
 import clothToken from "../assets/tokens/cloth.png";
 import spiceToken from "../assets/tokens/spice.png";
-import leatherToken from "../assets/tokens/leather.jpg";
+import leatherToken from "../assets/tokens/leather.png";
 
 /**
  * Visual language for each good. `cardImage`/`tokenImage` are the artwork you
