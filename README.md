@@ -1,84 +1,107 @@
 # Jaipur
 
-An iOS/iPadOS app for playing the 2-player card game **Jaipur** against a friend
-on a separate device, synced live through Firebase.
+Play the 2-player card game **Jaipur** against a friend on a separate device,
+synced live through Firebase. Two implementations live in this repo:
 
-This repo was scaffolded in a Linux, Xcode-less environment, so **nothing here
-has been compiled or run yet** - see [Status & what to verify first](#status--what-to-verify-first)
-before you start relying on it.
+- **`web/`** - a PWA (installable web app) that runs in Safari on iPhone/iPad
+  (or any browser), deployed automatically to GitHub Pages by a workflow in
+  this repo. **This is the one to use if you don't have a Mac** - no Xcode,
+  no Apple Developer account, nothing to build locally. Start here.
+- **`JaipurKit` / `JaipurApp`** - a native SwiftUI app for iOS/iPadOS. Requires
+  a Mac with Xcode to build, and an Apple Developer account to install on a
+  real device. Kept in the repo as an optional future upgrade path (see
+  [Native iOS app](#native-ios-app-optional-requires-a-mac) below) - not the
+  recommended path given no Mac access.
 
-## Repo layout
+## Quick start (web app, no Mac needed)
 
-```
-JaipurKit/          Pure Swift package: the Jaipur rules engine. No SwiftUI,
-                     no Firebase - a plain, unit-tested value-type model that
-                     both the app and (later, optionally) a server can share.
-JaipurApp/           The iOS app. Built with XcodeGen from project.yml, so the
-                     .xcodeproj itself isn't committed (see below).
-firebase/            firestore.rules, firestore.indexes.json, firebase.json -
-                     deploy with the Firebase CLI.
-```
+1. **Create a Firebase project** (free tier is plenty) - see
+   [Firebase setup](#firebase-setup) below.
+2. **Add the config as GitHub Actions secrets** on this repo (Settings →
+   Secrets and variables → Actions) - six `VITE_FIREBASE_*` values, see
+   below.
+3. **Turn on GitHub Pages**: Settings → Pages → Source → **GitHub Actions**.
+   (I can't flip this toggle myself - it's an admin-only repo setting.)
+4. Push to `main`. The `Deploy web app to GitHub Pages` workflow
+   (`.github/workflows/deploy-web.yml`) builds `web/` and publishes it to
+   `https://<you>.github.io/Jaipur/`.
+5. Open that URL in Safari on your iPhone/iPad, tap **Share → Add to Home
+   Screen** to make it feel like an installed app.
 
-## Status & what to verify first
+No local install is required to *use* the app, but if you want to develop it
+locally: `cd web && npm install && npm run dev` (needs a `web/.env` - copy
+`web/.env.example` and fill in the same Firebase values).
 
-This was written without access to a Mac/Xcode/Swift toolchain, so treat it as
-a strong, carefully-reasoned-through first draft rather than "known working
-code":
+## Status - what's actually been verified
 
-1. **`JaipurKit` is the part to trust most** - it's a plain Swift package with
-   a full unit test suite (`JaipurKit/Tests`). The very first thing to do on
-   your Mac is:
-   ```sh
-   cd JaipurKit
-   swift test
-   ```
-   Fix whatever that turns up before building on top of it.
-2. **The goods-token values** (`TokenBank.defaultStacks` in
-   `JaipurKit/Sources/JaipurKit/TokenBank.swift`) were reconstructed from
-   published Jaipur rules summaries, cross-checked for internal consistency
-   (token counts line up with the card counts in the deck), but I could not
-   reach the publisher's own rulebook PDF to confirm them byte-for-byte
-   (outbound web access was restricted in this environment). **Double-check
-   that table against your physical rulebook/insert before you rely on it for
-   real scoring.** Everything else - deck composition (55 cards: 6 diamond /
-   6 gold / 6 silver / 8 cloth / 8 spice / 10 leather / 11 camel), the 18
-   bonus-sale tokens (3×[3,3,2,2,2,1,1], 4×[6,6,5,5,4,4], 5+×[10,10,9,8,8]),
-   the 5-point camel bonus, the 7-card hand limit, the "sell at least 2" rule
-   for diamond/gold/silver, and "first to 2 round wins" - was confirmed via
-   multiple independent sources.
-3. **The SwiftUI + Firebase code has never been compiled.** The logic is
-   straightforward and I checked every API call against documented Firebase
-   iOS SDK signatures, but the very first `xcodegen generate && open` in Xcode
-   will likely surface a handful of small mistakes (a wrong argument label, a
-   missing `await`, that kind of thing). Budget an hour for that pass before
-   demoing it to anyone.
-4. **There's no game artwork.** The cards you shared are the publisher's
-   licensed illustrations, which I can't reproduce. `CardView` instead draws
-   each good as a color + SF Symbol (see `GoodType+Style.swift`) so the app is
-   fully playable and re-skinnable - drop real art into `Assets.xcassets` and
-   point `CardView` at it whenever you have some (commissioned or licensed).
+Unlike the native app below, **the web app has been built, type-checked, unit
+tested, and smoke-tested in a real headless browser** in the environment this
+was written in (no Mac needed for any of that - it's all just Node.js):
 
-## Getting set up
+- `cd web && npm test` → 31/31 rules-engine tests passing (deck composition,
+  every action type, round/game-end conditions, scoring).
+- `npm run build` → production build succeeds, output verified under a
+  `/Jaipur/` base path.
+- A Playwright smoke test caught and fixed two real bugs before you ever saw
+  them: the app going fully blank (no error shown) when Firebase isn't
+  configured yet, and a naive re-render approach that would have kicked the
+  on-screen keyboard away after every single keystroke while typing your
+  name. Both are fixed - typing a multi-word name now works fine, and a
+  missing Firebase config now shows a clear message instead of a blank page.
+- The generated PNG app icons were round-tripped through a real decoder
+  (Pillow) to confirm they're valid, not just correctly-named files.
 
-### 1. Firebase project
+What's **not** verified: the actual multiplayer flow end-to-end against a
+real Firebase project (this environment has no Firebase credentials to test
+with), and how it looks/feels on a physical iPhone/iPad screen. Test that
+part after you've done the Firebase setup below.
 
-You said no Firebase project exists yet, so:
+The **goods-token values** (`web/src/engine/tokenBank.ts`,
+`JaipurKit/Sources/JaipurKit/TokenBank.swift`) were reconstructed from
+published Jaipur rules summaries and cross-checked for internal consistency,
+but couldn't be confirmed byte-for-byte against the publisher's own rulebook
+(outbound access to most rules sites was blocked in this environment).
+Double-check that table against your physical rulebook/insert before relying
+on it for real scoring. Everything else - deck composition, the 18 bonus-sale
+tokens, the 5-point camel bonus, the 7-card hand limit, the "sell at least 2"
+rule for diamond/gold/silver, and "first to 2 round wins" - was confirmed via
+multiple independent sources (see [Rules reference](#rules-reference-implemented)).
 
-1. Go to the [Firebase console](https://console.firebase.google.com), create
-   a new project (Analytics is optional, you don't need it here).
-2. Add an iOS app with bundle ID `com.kkandenas.jaipur` (or change
-   `PRODUCT_BUNDLE_IDENTIFIER` in `JaipurApp/project.yml` to whatever you
-   prefer, consistently).
-3. Download the generated `GoogleService-Info.plist` and save it as
-   `JaipurApp/JaipurApp/GoogleService-Info.plist` (see the `.example` file
-   next to it for the expected shape). This file is git-ignored - never
-   commit your real one.
-4. In the console, enable:
-   - **Authentication → Sign-in method → Anonymous** (the app signs each
-     device in anonymously; there's no account system).
-   - **Firestore Database** (start in production mode - the rules in
-     `firebase/firestore.rules` lock it down).
-5. Deploy the security rules once you have the [Firebase CLI](https://firebase.google.com/docs/cli):
+There's also no licensed game artwork (the cards you shared are the
+publisher's IP) - goods are rendered as an emoji + color pairing
+(`web/src/ui/goodStyle.ts`), which is fully playable and easy to re-skin once
+you have real art.
+
+## Firebase setup
+
+You said no Firebase project exists yet:
+
+1. Go to the [Firebase console](https://console.firebase.google.com) and
+   create a new project (Analytics is optional).
+2. **Authentication → Sign-in method → Anonymous** → enable. The app signs
+   each browser in anonymously; there's no account system to manage.
+3. **Firestore Database** → create (production mode - `firebase/firestore.rules`
+   locks it down).
+4. **Project settings → Your apps → Add app → Web** (the `</>` icon, not iOS).
+   Register it (nickname doesn't matter, skip hosting setup). Copy the six
+   values from the shown `firebaseConfig` object:
+   `apiKey`, `authDomain`, `projectId`, `storageBucket`,
+   `messagingSenderId`, `appId`.
+5. Put those six values in two places:
+   - **Locally**: `web/.env` (copy from `web/.env.example`), for `npm run dev`.
+   - **GitHub Actions**: repo Settings → Secrets and variables → Actions →
+     New repository secret, one per value, named exactly
+     `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_AUTH_DOMAIN`,
+     `VITE_FIREBASE_PROJECT_ID`, `VITE_FIREBASE_STORAGE_BUCKET`,
+     `VITE_FIREBASE_MESSAGING_SENDER_ID`, `VITE_FIREBASE_APP_ID`. The deploy
+     workflow reads these at build time.
+
+   (A Firebase web config isn't a secret the way a server API key is - it
+   only identifies which project to talk to, and real access control lives in
+   `firestore.rules`. Using GitHub secrets here is just a convenient way to
+   inject per-environment values into the build, not because leaking it would
+   be dangerous.)
+6. Deploy the security rules with the [Firebase CLI](https://firebase.google.com/docs/cli):
    ```sh
    cd firebase
    firebase login
@@ -86,91 +109,80 @@ You said no Firebase project exists yet, so:
    firebase deploy --only firestore
    ```
 
-### 2. Generate and open the Xcode project
-
-The `.xcodeproj` isn't committed - [XcodeGen](https://github.com/yonaskolb/XcodeGen)
-generates it from `JaipurApp/project.yml` (much less error-prone than hand
-editing/committing a `.pbxproj`, and it keeps the file list in sync with disk
-automatically).
-
-```sh
-brew install xcodegen
-cd JaipurApp
-xcodegen generate
-open JaipurApp.xcodeproj
-```
-
-Xcode will then resolve the Firebase Swift Package (declared in `project.yml`)
-on first open - that can take a couple of minutes. `JaipurKit` resolves
-instantly since it's a local path dependency (`../JaipurKit`).
-
-Set your Team under **Signing & Capabilities** for the `JaipurApp` target,
-then run on two simulators (or a simulator + your phone) to play a match
-against yourself.
-
-### 3. Play
-
-- One device: **Create Game** → get a 5-character code.
-- Other device: **Join Game** → type that code.
-- Both boards update live via a Firestore listener.
-
-## Architecture
+## Architecture (web app)
 
 ```
- ┌────────────┐        JaipurKit.GameAction        ┌────────────┐
- │  Device A  │ ─────────────────────────────────▶ │            │
- │ (SwiftUI)  │                                     │  Firestore │
- │            │ ◀───────────────────────────────── │ games/{code}│
- └────────────┘     live listener: GameDocument     └────────────┘
-                                                            ▲  │
- ┌────────────┐                                            │  │
- │  Device B  │ ───────────────────────────────────────────┘  │
- │ (SwiftUI)  │ ◀───────────────────────────────────────────────┘
+ ┌────────────┐   engine.GameAction   ┌────────────┐
+ │  Device A  │ ─────────────────────▶│            │
+ │  (Safari)  │                        │  Firestore │
+ │            │ ◀───────────────────── │ games/{code}│
+ └────────────┘  onSnapshot: GameDoc   └────────────┘
+                                              ▲  │
+ ┌────────────┐                               │  │
+ │  Device B  │ ──────────────────────────────┘  │
+ │  (Safari)  │ ◀─────────────────────────────────┘
  └────────────┘
 ```
 
-- **`JaipurKit`** (`GameEngine.apply(_:by:to:)`) is a pure function:
-  `(GameAction, playerID, GameState) throws -> GameState`. It has no I/O and
-  no notion of Firebase, which is what makes it unit-testable and reusable.
-- **`GameService`** (`JaipurApp/JaipurApp/Services/GameService.swift`) is the
-  only thing that talks to Firestore. Every move goes through a **Firestore
-  transaction**: read the current `GameState`, run it through `GameEngine`,
-  write the result. That's what stops two near-simultaneous taps on both
-  phones from corrupting the board - Firestore retries the transaction if the
-  document changed underneath it.
-- **`GameViewModel`** observes `games/{code}` via `addSnapshotListener`
-  wrapped in an `AsyncStream`, and turns UI taps (selecting market/hand cards)
-  into a single `GameAction` once the player confirms.
-- Auth is **anonymous** (`FirebaseAuthService`) - there's no email/password
-  flow to build, and the Firebase UID is all the engine needs to tell the two
-  players apart.
+- **`web/src/engine`** (`apply(action, playerID, state)`) is a pure function
+  - no DOM, no Firebase - that returns a brand new `GameState` or throws a
+  typed `GameError`. That's what makes it unit-testable and safe to run
+  inside a Firestore transaction.
+- **`web/src/firebase/gameService.ts`** is the only thing that talks to
+  Firestore. Every move runs inside a `runTransaction`: read the current
+  `GameState`, run it through the engine, write the result back. That's what
+  stops two near-simultaneous taps on both phones from corrupting the board.
+- **`web/src/ui`** is plain TypeScript + DOM (no framework) - a tiny
+  hyperscript-style builder (`ui/h.ts`) and a full-tree re-render on every
+  state change, with explicit focus/cursor preservation for text inputs
+  (`mount()` in `ui/h.ts`) so re-rendering doesn't fight you while typing.
+- Auth is **anonymous** - there's no email/password flow, and the Firebase
+  UID is all the engine needs to tell the two players apart.
+- The exact same `games/{code}` document shape is used here as in the native
+  Swift version below, so `firebase/firestore.rules` works for either.
 
-### Hardening hidden information (Tier 2, not built here)
+### Hardening hidden information (not built here)
 
 Right now `games/{code}.state` holds the *entire* game - including the draw
 pile order and the opponent's hand - and both players' clients can read the
 whole document (that's what `firestore.rules` allows). A player willing to
-bypass the app and read Firestore directly could see cards they shouldn't.
-For playing with a friend that's a fine trade-off for how much simpler it
-keeps the app. If you later want it cheat-proof:
+open devtools and read Firestore directly could see cards they shouldn't. For
+playing with a friend that's a reasonable trade-off for how much simpler it
+keeps the app. If you want it cheat-proof later: move `apply()` into a
+Firebase **Cloud Function** (callable), store the authoritative `GameState`
+in a doc clients can't read directly, and fan out a redacted per-player view
+(own hand in full, opponent's hand as a count only) into
+`games/{code}/players/{uid}`, each readable only by its own `uid`.
 
-1. Move `GameEngine.apply` into a **Cloud Function** (callable), rewritten in
-   TypeScript (or run the actual Swift engine server-side via a small
-   Linux-hosted Swift service - `JaipurKit` already builds on Linux since it
-   has zero Apple-only dependencies, so this is realistic).
-2. Store the authoritative `GameState` in a document clients *can't* read
-   directly (e.g. `games/{code}/private/state`, Firestore rules deny all
-   client access), written only by the Cloud Function via the Admin SDK.
-3. Have the function fan out a **redacted view** per player into
-   `games/{code}/players/{uid}` (that player's own hand in full, the
-   opponent's hand as a card *count* only, the market, token banks, etc.),
-   each readable only by its own `uid`.
-4. Clients call the callable function with a `GameAction` instead of writing
-   Firestore directly; `GameService` already models actions this way, so the
-   client-side change is mostly swapping the transaction call for a callable
-   invocation.
+## Native iOS app (optional, requires a Mac)
+
+`JaipurKit` (pure Swift rules engine, mirrors `web/src/engine` exactly) and
+`JaipurApp` (SwiftUI) implement the same game as a native app. This was
+written in an environment with no Mac/Xcode/Swift toolchain, so **none of it
+has been compiled** - treat it as a well-reasoned first draft, not working
+code, and budget time for a first build/debug pass. If you get access to a
+Mac later:
+
+```sh
+cd JaipurKit && swift test        # verify the rules engine first
+```
+
+Then, for the app itself:
+
+1. Firebase console → **Add app → iOS**, bundle ID `com.kkandenas.jaipur` (or
+   change `PRODUCT_BUNDLE_IDENTIFIER` in `JaipurApp/project.yml`). Download
+   `GoogleService-Info.plist` → save as `JaipurApp/JaipurApp/GoogleService-Info.plist`
+   (git-ignored; see the `.example` next to it).
+2. `brew install xcodegen && cd JaipurApp && xcodegen generate && open JaipurApp.xcodeproj`
+3. Set your Team under Signing & Capabilities, run on two simulators.
+
+Installing on a real iPhone/iPad additionally needs an Apple Developer
+Program account ($99/yr) for code signing - Xcode can't put an app on a
+physical device without one, Mac or no Mac.
 
 ## Rules reference implemented
+
+Both engines (`web/src/engine`, `JaipurKit`) implement the same rules:
 
 - 55-card deck: 6 diamond, 6 gold, 6 silver, 8 cloth, 8 spice, 10 leather, 11 camel.
 - Market seeded with 3 camels + 2 random cards; each player dealt 5.
@@ -186,3 +198,20 @@ keeps the app. If you later want it cheat-proof:
 - Camel-herd majority gets a 5-point bonus at round end (tie = nobody).
 - First player to win 2 rounds wins the match; on a tied round total, nobody
   is credited a round win.
+
+## Repo layout
+
+```
+web/                 The PWA - recommended path, see Quick start above.
+  src/engine/          Pure TS rules engine + vitest suite.
+  src/firebase/         Firestore/Auth service layer.
+  src/ui/               Vanilla TS/DOM views and components.
+  scripts/generate-icons.mjs  Dependency-free PNG icon generator (`npm run icons`).
+.github/workflows/deploy-web.yml   Builds web/ and deploys to GitHub Pages.
+
+JaipurKit/           Native rules engine (Swift package, mirrors web/src/engine).
+JaipurApp/           Native SwiftUI app, built via XcodeGen from project.yml.
+
+firebase/            firestore.rules, firestore.indexes.json, firebase.json -
+                     shared by both apps, deploy with the Firebase CLI.
+```

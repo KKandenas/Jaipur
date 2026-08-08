@@ -15,5 +15,11 @@ xcuserdata/
 # Secrets - never commit your real Firebase config
 JaipurApp/JaipurApp/GoogleService-Info.plist
 
+# Web app (Vite)
+web/node_modules/
+web/dist/
+web/.env
+web/*.local
+
 # macOS
 .DS_Store
