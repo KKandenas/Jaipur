@@ -1,5 +1,5 @@
 import { roundGoodsValue, type Player } from "../../engine";
-import camelToken from "../../assets/camel-token.png";
+import { goodStyle } from "../goodStyle";
 import { h } from "../h";
 
 export function playerBarView(player: Player, options: { isCurrentTurn: boolean; showHandCount: boolean }): HTMLElement {
@@ -20,7 +20,7 @@ export function playerBarView(player: Player, options: { isCurrentTurn: boolean;
     h(
       "div",
       { class: "player-bar__stat" },
-      h("img", { class: "player-bar__icon", src: camelToken, alt: "Camels" }),
+      h("img", { class: "player-bar__icon", src: goodStyle("camel").cardImage, alt: "Camels" }),
       String(player.camelCount)
     ),
     options.showHandCount ? h("div", { class: "player-bar__stat" }, `🂠 ${player.hand.length}`) : null,

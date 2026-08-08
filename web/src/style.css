@@ -273,10 +273,11 @@ button {
 }
 
 .player-bar__icon {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
+  width: 16px;
+  height: 22px;
+  border-radius: 3px;
   object-fit: cover;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 .player-bar__stat--value {
@@ -637,9 +638,80 @@ button {
   margin-bottom: 4px;
 }
 
+/* ---------- Larger screens (tablets, e.g. iPad) ---------- */
+
 @media (min-width: 640px) {
+  .game {
+    max-width: 900px;
+    margin: 0 auto;
+    gap: 16px;
+  }
+
   .card {
-    width: 72px;
-    height: 100px;
+    width: 84px;
+    height: 118px;
+  }
+
+  .hand {
+    gap: 10px;
+  }
+
+  .hand .card {
+    max-width: 110px;
+  }
+
+  .market {
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .token-tray {
+    width: 150px;
+    gap: 10px;
+  }
+
+  .token-chip__value {
+    font-size: 1.1rem;
+  }
+
+  .token-chip__count {
+    width: 22px;
+    height: 22px;
+    font-size: 0.75rem;
+    bottom: -6px;
+    right: -6px;
+  }
+
+  .bonus-tray {
+    gap: 16px;
+  }
+
+  .bonus-chip__title {
+    font-size: 0.8rem;
+  }
+
+  .bonus-chip__value {
+    width: 44px;
+    height: 44px;
+    font-size: 1.1rem;
+  }
+
+  .bonus-flip-chip {
+    width: 30px;
+    height: 30px;
+    font-size: 0.85rem;
+  }
+
+  .player-bar__icon {
+    width: 22px;
+    height: 30px;
+  }
+
+  .lobby-card {
+    max-width: 480px;
+  }
+
+  .overlay__card {
+    max-width: 440px;
   }
 }

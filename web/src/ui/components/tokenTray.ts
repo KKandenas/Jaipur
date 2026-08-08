@@ -35,8 +35,12 @@ export function bonusTokenSummaryView(bank: BonusTokenBank): HTMLElement {
       h("span", { class: "bonus-chip__title" }, title),
       h(
         "span",
-        { class: "bonus-chip__value", style: { "--card-image": `url(${tokenImage})` } },
-        values.length > 0 ? String(values[0]) : "—"
+        {
+          class: "bonus-chip__value",
+          style: { "--card-image": `url(${tokenImage})` },
+          title: `${values.length} left - value hidden until you take one`
+        },
+        values.length > 0 ? "?" : "—"
       )
     );
 
