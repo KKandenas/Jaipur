@@ -13,6 +13,7 @@ export function marketView(
       const tappable = options.interactive && (options.exchanging || card.good !== "camel");
       return cardView(card, {
         selected: options.selectedIDs.has(card.id),
+        disabled: !tappable,
         onClick: tappable ? () => options.onTap(card) : undefined
       });
     })
