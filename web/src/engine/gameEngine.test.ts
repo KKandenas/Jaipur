@@ -235,8 +235,8 @@ describe("round end", () => {
   it("ends the round once three token stacks are exhausted", () => {
     const state = fixtureState();
     takeTokens(state.tokenBank, "diamond", 5);
-    takeTokens(state.tokenBank, "gold", 6);
-    takeTokens(state.tokenBank, "silver", 5); // leaves 1 silver token
+    takeTokens(state.tokenBank, "gold", 5);
+    takeTokens(state.tokenBank, "silver", 4); // leaves 1 silver token
     state.players[0].hand = [
       { id: "s1", good: "silver" },
       { id: "s2", good: "silver" }
@@ -260,8 +260,8 @@ describe("round end", () => {
     state.players[0].camelCount = 5;
     state.players[1].camelCount = 2;
     takeTokens(state.tokenBank, "diamond", 5);
-    takeTokens(state.tokenBank, "gold", 6);
-    takeTokens(state.tokenBank, "silver", 5);
+    takeTokens(state.tokenBank, "gold", 5);
+    takeTokens(state.tokenBank, "silver", 4); // leaves 1 silver token
     state.players[0].hand = [
       { id: "s1", good: "silver" },
       { id: "s2", good: "silver" }
@@ -276,8 +276,8 @@ describe("round end", () => {
     const state = fixtureState();
     state.players[0].roundsWon = 1;
     takeTokens(state.tokenBank, "diamond", 5);
-    takeTokens(state.tokenBank, "gold", 6);
-    takeTokens(state.tokenBank, "silver", 5);
+    takeTokens(state.tokenBank, "gold", 5);
+    takeTokens(state.tokenBank, "silver", 4); // leaves 1 silver token
     state.players[0].hand = [
       { id: "s1", good: "silver" },
       { id: "s2", good: "silver" }

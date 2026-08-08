@@ -21,9 +21,9 @@ final class TokenBankTests: XCTestCase {
         var bank = TokenBank()
         XCTAssertEqual(bank.exhaustedStackCount, 0)
         _ = bank.takeTokens(for: .diamond, count: 5)
-        _ = bank.takeTokens(for: .gold, count: 6)
+        _ = bank.takeTokens(for: .gold, count: 5)
         XCTAssertEqual(bank.exhaustedStackCount, 2)
-        _ = bank.takeTokens(for: .silver, count: 6)
+        _ = bank.takeTokens(for: .silver, count: 5)
         XCTAssertEqual(bank.exhaustedStackCount, 3)
     }
 

@@ -1,21 +1,17 @@
 import { SELLABLE_GOODS, type GoodType, type TokenBank } from "./types";
 
 /**
- * NOTE: this table follows the widely published Jaipur player-aid values and
- * is internally consistent with the official deck composition (55 cards:
- * 6/6/6/8/8/10/11). It could not be confirmed byte-for-byte against the
- * publisher's own rulebook in the environment this was written in - double
- * check against your physical rulebook/insert before relying on it for real
- * scoring.
+ * Confirmed against the physical game's component list: 38 goods tokens
+ * total (5 diamond + 5 gold + 5 silver + 7 cloth + 7 spice + 9 leather).
  */
 export const DEFAULT_TOKEN_STACKS: Record<GoodType, number[]> = {
   camel: [],
   diamond: [7, 7, 5, 5, 5],
-  gold: [6, 6, 6, 5, 5, 5],
-  silver: [5, 5, 5, 5, 5, 5],
-  cloth: [5, 3, 3, 2, 2, 1, 1, 1],
-  spice: [5, 3, 3, 2, 2, 1, 1, 1],
-  leather: [4, 3, 2, 1, 1, 1, 1, 1, 1, 1]
+  gold: [6, 6, 5, 5, 5],
+  silver: [5, 5, 5, 5, 5],
+  cloth: [5, 3, 3, 2, 2, 1, 1],
+  spice: [5, 3, 3, 2, 2, 1, 1],
+  leather: [4, 3, 2, 1, 1, 1, 1, 1, 1]
 };
 
 export function newTokenBank(): TokenBank {

@@ -204,8 +204,8 @@ final class GameEngineTests: XCTestCase {
         var state = makeFixtureState()
         var bank = TokenBank()
         _ = bank.takeTokens(for: .diamond, count: 5)
-        _ = bank.takeTokens(for: .gold, count: 6)
-        _ = bank.takeTokens(for: .silver, count: 5) // leave 1 silver token
+        _ = bank.takeTokens(for: .gold, count: 5)
+        _ = bank.takeTokens(for: .silver, count: 4) // leave 1 silver token
         state.tokenBank = bank
         state.players[0].hand = [Card(id: "s1", good: .silver), Card(id: "s2", good: .silver)]
 
@@ -228,8 +228,8 @@ final class GameEngineTests: XCTestCase {
         state.players[1].camelCount = 2
         var bank = TokenBank()
         _ = bank.takeTokens(for: .diamond, count: 5)
-        _ = bank.takeTokens(for: .gold, count: 6)
-        _ = bank.takeTokens(for: .silver, count: 5)
+        _ = bank.takeTokens(for: .gold, count: 5)
+        _ = bank.takeTokens(for: .silver, count: 4) // leave 1 silver token
         state.tokenBank = bank
         state.players[0].hand = [Card(id: "s1", good: .silver), Card(id: "s2", good: .silver)]
 
@@ -243,8 +243,8 @@ final class GameEngineTests: XCTestCase {
         state.players[0].roundsWon = 1
         var bank = TokenBank()
         _ = bank.takeTokens(for: .diamond, count: 5)
-        _ = bank.takeTokens(for: .gold, count: 6)
-        _ = bank.takeTokens(for: .silver, count: 5)
+        _ = bank.takeTokens(for: .gold, count: 5)
+        _ = bank.takeTokens(for: .silver, count: 4) // leave 1 silver token
         state.tokenBank = bank
         state.players[0].hand = [Card(id: "s1", good: .silver), Card(id: "s2", good: .silver)]
 
