@@ -283,6 +283,11 @@ button {
   color: #ffd76a;
 }
 
+.player-bar__stat--bonus {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
 /* ---------- Cards ---------- */
 
 .card {
@@ -525,6 +530,43 @@ button {
 
 .round-end__row-name {
   font-weight: 700;
+}
+
+.round-end__row-score {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 2px;
+  text-align: right;
+}
+
+.bonus-flip-row {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.bonus-flip-chip {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.25);
+  color: #6b5847;
+  font-size: 0.7rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.bonus-flip-chip--revealed {
+  background: var(--accent);
+  color: #fff;
+  transform: scale(1.08);
 }
 
 .round-end__winner {

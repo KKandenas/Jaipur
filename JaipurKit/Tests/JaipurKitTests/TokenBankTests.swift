@@ -31,7 +31,7 @@ final class TokenBankTests: XCTestCase {
         var bonus = BonusTokenBank()
         XCTAssertEqual(bonus.drawBonus(forCardsSold: 3), 3)
         XCTAssertEqual(bonus.drawBonus(forCardsSold: 4), 6)
-        // saleOfFiveOrMore starts [10, 10, 9, 8, 8] - selling 5 and selling 7
+        // saleOfFiveOrMore starts [10, 10, 9, 9, 8, 8] - selling 5 and selling 7
         // both draw from this same stack, so the second draw gets the second 10.
         XCTAssertEqual(bonus.drawBonus(forCardsSold: 5), 10)
         XCTAssertEqual(bonus.drawBonus(forCardsSold: 7), 10) // 5-or-more stack shared by 6+

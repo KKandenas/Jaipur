@@ -56,7 +56,8 @@ export function rulesModalView(): HTMLElement {
             "Diamanter, guld och silver: sälj minst 2 åt gången.",
             "Tyg, kryddor och läder: sälj valfritt antal, även bara 1.",
             "Du får de översta polletterna från varans hög - polletterna går från högt till lågt värde, så det lönar sig att sälja tidigt.",
-            "Att sälja 3 eller fler kort samtidigt ger även en bonuspollett (större försäljningar ger större bonusar)."
+            "Att sälja 3 eller fler kort samtidigt ger även en bonuspollett (större försäljningar ger större bonusar).",
+            "Bonuspollettens värde är hemligt - du ser bara att du fått en, inte vad den är värd förrän ronden är slut och du vänder på den."
           )
         ),
         section(
@@ -83,7 +84,7 @@ export function rulesModalView(): HTMLElement {
           list(
             "55 kort: 6 diamant, 6 guld, 6 silver, 8 tyg, 8 kryddor, 10 läder, 11 kameler.",
             "38 varutokens: 5 diamant (7,7,5,5,5), 5 guld (6,6,5,5,5), 5 silver (5,5,5,5,5), 7 tyg (5,3,3,2,2,1,1), 7 kryddor (5,3,3,2,2,1,1), 9 läder (4,3,2,1,1,1,1,1,1).",
-            "18 bonuspolletter för att sälja 3, 4 eller 5+ kort på en gång.",
+            "18 bonuspolletter (6 st per storlek, hemliga tills ronden är slut): 3-kort värde 1-3, 4-kort värde 4-6, 5+-kort värde 8-10.",
             "1 kameltoken värd 5 poäng till den med flest kameler i hjorden.",
             "3 Excellence-sigill - ett delas ut per rondvinst, och du behöver bara 2 för att vinna matchen."
           )

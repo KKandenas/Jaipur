@@ -34,8 +34,8 @@ describe("bonusTokenBank", () => {
     const bank = newBonusTokenBank();
     expect(drawBonus(bank, 3)).toBe(3);
     expect(drawBonus(bank, 4)).toBe(6);
-    // saleOfFiveOrMore starts [10, 10, 9, 8, 8] - selling 5 and selling 7 both
-    // draw from this same stack, so the second draw gets the second 10.
+    // saleOfFiveOrMore starts [10, 10, 9, 9, 8, 8] - selling 5 and selling 7
+    // both draw from this same stack, so the second draw gets the second 10.
     expect(drawBonus(bank, 5)).toBe(10);
     expect(drawBonus(bank, 7)).toBe(10);
     expect(drawBonus(bank, 6)).toBe(9);

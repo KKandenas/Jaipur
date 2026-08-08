@@ -1,4 +1,4 @@
-import { roundBonusValue, roundGoodsValue, type Player } from "../../engine";
+import { roundGoodsValue, type Player } from "../../engine";
 import camelToken from "../../assets/camel-token.jpg";
 import { h } from "../h";
 
@@ -24,6 +24,17 @@ export function playerBarView(player: Player, options: { isCurrentTurn: boolean;
       String(player.camelCount)
     ),
     options.showHandCount ? h("div", { class: "player-bar__stat" }, `🂠 ${player.hand.length}`) : null,
-    h("div", { class: "player-bar__stat player-bar__stat--value" }, `${roundGoodsValue(player) + roundBonusValue(player)} ₹`)
+    player.wonBonusTokens.length > 0
+      ? h(
+          "div",
+          {
+            class: "player-bar__stat player-bar__stat--bonus",
+            title: "Bonus tokens - value hidden until the round ends"
+          },
+          "🎁",
+          String(player.wonBonusTokens.length)
+        )
+      : null,
+    h("div", { class: "player-bar__stat player-bar__stat--value" }, `${roundGoodsValue(player)} ₹`)
   );
 }

@@ -25,7 +25,7 @@ function fixtureState(): GameState {
     drawPile,
     discard: [],
     tokenBank: newTokenBank(),
-    bonusTokenBank: { saleOfThree: [3, 3, 2, 2, 2, 1, 1], saleOfFour: [6, 6, 5, 5, 4, 4], saleOfFiveOrMore: [10, 10, 9, 8, 8] },
+    bonusTokenBank: { saleOfThree: [3, 3, 2, 2, 1, 1], saleOfFour: [6, 6, 5, 5, 4, 4], saleOfFiveOrMore: [10, 10, 9, 9, 8, 8] },
     currentPlayerID: "A",
     roundNumber: 1,
     roundEndReason: null,
