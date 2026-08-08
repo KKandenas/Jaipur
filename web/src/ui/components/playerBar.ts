@@ -1,5 +1,5 @@
 import { roundGoodsValue, type Player } from "../../engine";
-import camelToken from "../../assets/camel-token.jpg";
+import camelToken from "../../assets/camel-token.png";
 import { h } from "../h";
 
 export function playerBarView(player: Player, options: { isCurrentTurn: boolean; showHandCount: boolean }): HTMLElement {
