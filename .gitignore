@@ -1,0 +1,19 @@
+# Xcode / XcodeGen generated project (regenerate with `xcodegen generate`)
+JaipurApp/*.xcodeproj
+JaipurApp/Generated/
+JaipurApp/.build/
+JaipurApp/DerivedData/
+*.xcworkspace
+!default.xcworkspace
+xcuserdata/
+*.xcuserstate
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# Secrets - never commit your real Firebase config
+JaipurApp/JaipurApp/GoogleService-Info.plist
+
+# macOS
+.DS_Store
