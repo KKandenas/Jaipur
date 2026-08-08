@@ -334,10 +334,22 @@ button {
 
 .hand {
   display: flex;
-  gap: 8px;
-  overflow-x: auto;
+  gap: 6px;
   padding: 4px 2px 8px;
+  /* No horizontal scrolling: cards flex-shrink (below) so all of a full
+     7-card hand always fit on screen at once instead of hiding off the
+     edge behind a scrollbar that's easy to miss. */
+  overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+}
+
+.hand .card {
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto;
+  height: auto;
+  max-width: 72px;
+  aspect-ratio: 58 / 82;
 }
 
 /* ---------- Tokens ---------- */
