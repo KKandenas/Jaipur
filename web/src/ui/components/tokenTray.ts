@@ -9,11 +9,15 @@ export function tokenTrayView(tokenBank: TokenBank): HTMLElement {
     SELLABLE_GOODS.map((good) => {
       const values = tokenBank.stacks[good] ?? [];
       const style = goodStyle(good);
+      const depleted = values.length === 0;
       return h(
         "div",
-        { class: "token-chip", style: { "--card-color": style.color }, title: `${style.label}: ${values.length} left` },
-        h("span", { class: "token-chip__emoji" }, style.emoji),
-        h("span", { class: "token-chip__value" }, values.length > 0 ? String(values[0]) : "—"),
+        {
+          class: `token-chip ${depleted ? "token-chip--empty" : ""}`,
+          style: { "--card-color": style.color, "--card-image": `url(${style.tokenImage})` },
+          title: `${style.label}: ${values.length} left`
+        },
+        h("span", { class: "token-chip__value" }, depleted ? "—" : String(values[0])),
         h("span", { class: "token-chip__count" }, String(values.length))
       );
     })
