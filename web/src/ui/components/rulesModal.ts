@@ -23,51 +23,51 @@ export function rulesModalView(): HTMLElement {
       h(
         "div",
         { class: "rules__header" },
-        h("h2", {}, "How to Play Jaipur"),
-        h("button", { class: "btn btn--secondary", type: "button", onclick: closeRules }, "Close")
+        h("h2", {}, "Så spelar du Jaipur"),
+        h("button", { class: "btn btn--secondary", type: "button", onclick: closeRules }, "Stäng")
       ),
       h(
         "div",
         { class: "rules__body" },
         section(
-          "Goal",
-          h("p", {}, "Trade goods for rupees over up to 3 rounds. First player to win 2 rounds wins the match.")
+          "Mål",
+          h("p", {}, "Handla varor mot rupier under upp till 3 ronder. Den som vinner 2 ronder vinner matchen.")
         ),
         section(
-          "Your turn - do exactly one",
+          "Din tur - gör exakt en sak",
           list(
-            "Take all camels currently in the market into your herd.",
-            "Take a single card from the market into your hand (not a camel - camels only come via the action above).",
-            "Exchange 2-5 cards: give that many cards from your hand and/or camels from your herd for that many cards from the market.",
-            "Sell one or more cards of the same good from your hand for tokens."
+            "Ta alla kameler som just nu finns på marknaden till din hjord.",
+            "Ta ett enda kort från marknaden till din hand (inte en kamel - kameler får du bara via åtgärden ovan).",
+            "Byt 2-5 kort: ge lika många kort från din hand och/eller kameler från din hjord mot lika många kort från marknaden.",
+            "Sälj ett eller flera kort av samma vara från din hand mot polletter."
           )
         ),
         section(
-          "Selling",
+          "Att sälja",
           list(
-            "Diamonds, gold and silver: sell at least 2 at once.",
-            "Cloth, spice and leather: sell any number, even just 1.",
-            "You get the top token(s) off that good's stack - tokens go from high to low value, so selling early is worth more.",
-            "Selling 3 or more cards at once also earns a bonus token (bigger sales earn bigger bonuses)."
+            "Diamanter, guld och silver: sälj minst 2 åt gången.",
+            "Tyg, kryddor och läder: sälj valfritt antal, även bara 1.",
+            "Du får de översta polletterna från varans hög - polletterna går från högt till lågt värde, så det lönar sig att sälja tidigt.",
+            "Att sälja 3 eller fler kort samtidigt ger även en bonuspollett (större försäljningar ger större bonusar)."
           )
         ),
         section(
-          "Camels",
+          "Kameler",
           h(
             "p",
             {},
-            "Camels don't count toward your 7-card hand limit and can't be sold. At the end of a round, whoever has the most camels gets a 5-rupee bonus (nobody gets it on a tie)."
+            "Kameler räknas inte mot din handgräns på 7 kort och kan inte säljas. I slutet av en rond får den som har flest kameler en bonus på 5 rupier (ingen får den vid oavgjort)."
           )
         ),
         section(
-          "Hand limit",
-          h("p", {}, "You may never end your turn with more than 7 goods cards in hand (camels don't count).")
+          "Handgräns",
+          h("p", {}, "Du får aldrig avsluta din tur med fler än 7 varukort på hand (kameler räknas inte).")
         ),
         section(
-          "Round end",
+          "Rondens slut",
           list(
-            "The round ends the instant 3 of the 6 goods token stacks run out, or the draw pile can't refill the market back to 5 cards.",
-            "Whoever has the higher total (tokens + bonuses + camel bonus) wins the round."
+            "Ronden tar slut så fort 3 av de 6 varupollett-högarna tar slut, eller om draghögen inte längre kan fylla på marknaden till 5 kort.",
+            "Den med högst totalsumma (polletter + bonusar + kamelbonus) vinner ronden."
           )
         )
       )

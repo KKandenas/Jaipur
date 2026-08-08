@@ -125,7 +125,7 @@ function waitingForOpponentView(code: string): HTMLElement {
       h("span", { class: "game__code-hint" }, "tap to copy")
     ),
     h("p", { class: "lobby__hint" }, "Waiting for them to join…"),
-    h("button", { class: "btn btn--text", type: "button", onclick: openRules }, "📜 How to Play"),
+    h("button", { class: "btn btn--text", type: "button", onclick: openRules }, "📜 Så spelar du"),
     h("button", { class: "btn btn--secondary", type: "button", onclick: () => setActiveGameCode(null) }, "Leave"),
     state.showRules ? rulesModalView() : null
   );
@@ -163,7 +163,7 @@ export function gameView(): HTMLElement {
       { class: "game__topbar" },
       h("button", { class: "btn btn--text", type: "button", onclick: () => setActiveGameCode(null) }, "← Leave"),
       h("span", { class: "game__code" }, state.gameCode ?? ""),
-      h("button", { class: "btn btn--text", type: "button", onclick: openRules }, "📜 Rules")
+      h("button", { class: "btn btn--text", type: "button", onclick: openRules }, "📜 Regler")
     ),
     opponentPlayer ? playerBarView(opponentPlayer, { isCurrentTurn: gameState.currentPlayerID === opponentPlayer.id, showHandCount: true }) : null,
     h(
