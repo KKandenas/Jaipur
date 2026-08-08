@@ -163,6 +163,33 @@ button {
   justify-content: center;
   text-align: center;
   gap: 16px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.game__code-big {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--text);
+  padding: 20px 32px;
+  font-family: ui-monospace, "SF Mono", monospace;
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: 6px;
+  cursor: pointer;
+}
+
+.game__code-hint {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: normal;
+  color: var(--text-muted);
 }
 
 .game__topbar {
