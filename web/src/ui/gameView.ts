@@ -1,12 +1,13 @@
 import type { Card, GameAction, GameState, GoodType, Player } from "../engine";
 import { findPlayer, opponentOf } from "../engine";
 import { applyAction, startNextRound } from "../firebase/gameService";
-import { clearSelections, setActiveGameCode, setState, state } from "../state";
+import { clearSelections, openRules, setActiveGameCode, setState, state } from "../state";
 import { actionBarView } from "./components/actionBar";
 import { handView } from "./components/hand";
 import { marketView } from "./components/market";
 import { playerBarView } from "./components/playerBar";
 import { roundEndOverlay } from "./components/roundEndOverlay";
+import { rulesModalView } from "./components/rulesModal";
 import { bonusTokenSummaryView, tokenTrayView } from "./components/tokenTray";
 import { h } from "./h";
 
@@ -124,7 +125,9 @@ function waitingForOpponentView(code: string): HTMLElement {
       h("span", { class: "game__code-hint" }, "tap to copy")
     ),
     h("p", { class: "lobby__hint" }, "Waiting for them to join…"),
-    h("button", { class: "btn btn--secondary", type: "button", onclick: () => setActiveGameCode(null) }, "Leave")
+    h("button", { class: "btn btn--text", type: "button", onclick: openRules }, "📜 How to Play"),
+    h("button", { class: "btn btn--secondary", type: "button", onclick: () => setActiveGameCode(null) }, "Leave"),
+    state.showRules ? rulesModalView() : null
   );
 }
 
@@ -159,7 +162,8 @@ export function gameView(): HTMLElement {
       "div",
       { class: "game__topbar" },
       h("button", { class: "btn btn--text", type: "button", onclick: () => setActiveGameCode(null) }, "← Leave"),
-      h("span", { class: "game__code" }, state.gameCode ?? "")
+      h("span", { class: "game__code" }, state.gameCode ?? ""),
+      h("button", { class: "btn btn--text", type: "button", onclick: openRules }, "📜 Rules")
     ),
     opponentPlayer ? playerBarView(opponentPlayer, { isCurrentTurn: gameState.currentPlayerID === opponentPlayer.id, showHandCount: true }) : null,
     h(
@@ -223,6 +227,10 @@ export function gameView(): HTMLElement {
         onLeave: () => setActiveGameCode(null)
       })
     );
+  }
+
+  if (state.showRules) {
+    root.appendChild(rulesModalView());
   }
 
   return root;

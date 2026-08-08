@@ -21,6 +21,8 @@ export interface AppState {
   selectedSellIDs: Set<string>;
   gameBusy: boolean;
   gameError: string | null;
+
+  showRules: boolean;
 }
 
 type Listener = () => void;
@@ -48,7 +50,8 @@ export const state: AppState = {
   selectedCamelsToGive: 0,
   selectedSellIDs: new Set(),
   gameBusy: false,
-  gameError: null
+  gameError: null,
+  showRules: false
 };
 
 export function subscribe(listener: Listener): () => void {
@@ -83,6 +86,14 @@ export function setActiveGameCode(code: string | null): void {
   else localStorage.removeItem(GAME_CODE_KEY);
   setState({ gameCode: code, gameDoc: null });
   clearSelections();
+}
+
+export function openRules(): void {
+  setState({ showRules: true });
+}
+
+export function closeRules(): void {
+  setState({ showRules: false });
 }
 
 export function clearSelections(): void {

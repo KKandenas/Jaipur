@@ -1,5 +1,6 @@
 import { createGame, joinGame } from "../firebase/gameService";
-import { effectiveDisplayName, setActiveGameCode, setDisplayName, setState, state } from "../state";
+import { effectiveDisplayName, openRules, setActiveGameCode, setDisplayName, setState, state } from "../state";
+import { rulesModalView } from "./components/rulesModal";
 import { h } from "./h";
 
 async function handleCreate(): Promise<void> {
@@ -45,7 +46,8 @@ export function lobbyView(): HTMLElement {
       "div",
       { class: "lobby__header" },
       h("h1", {}, "Jaipur"),
-      h("p", {}, "A two-player caravan of trading")
+      h("p", {}, "A two-player caravan of trading"),
+      h("button", { class: "btn btn--text", type: "button", onclick: openRules }, "📜 How to Play")
     ),
     card(
       h("h2", {}, "Your name"),
@@ -92,6 +94,7 @@ export function lobbyView(): HTMLElement {
     ),
     state.lobbyBusy ? h("p", { class: "lobby__status" }, "Working…") : null,
     state.lobbyError ? h("p", { class: "lobby__error" }, state.lobbyError) : null,
-    state.authError ? h("p", { class: "lobby__error" }, `Sign-in failed: ${state.authError}`) : null
+    state.authError ? h("p", { class: "lobby__error" }, `Sign-in failed: ${state.authError}`) : null,
+    state.showRules ? rulesModalView() : null
   );
 }
