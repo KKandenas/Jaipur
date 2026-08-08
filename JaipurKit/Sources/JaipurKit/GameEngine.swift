@@ -26,8 +26,12 @@ public enum GameEngine {
         let (market, drawPile) = dealMarketAndDrawPile(rng: &rng)
 
         var remaining = drawPile
-        players[0].hand = Array(remaining.prefix(5)); remaining.removeFirst(5)
-        players[1].hand = Array(remaining.prefix(5)); remaining.removeFirst(5)
+        let deal0 = dealStartingHand(&remaining)
+        players[0].hand = deal0.hand
+        players[0].camelCount = deal0.camelCount
+        let deal1 = dealStartingHand(&remaining)
+        players[1].hand = deal1.hand
+        players[1].camelCount = deal1.camelCount
 
         let startingPlayer = Bool.random(using: &rng) ? playerID1 : playerID2
 
@@ -56,8 +60,12 @@ public enum GameEngine {
         }
         let (market, drawPile) = dealMarketAndDrawPile(rng: &rng)
         var remaining = drawPile
-        players[0].hand = Array(remaining.prefix(5)); remaining.removeFirst(5)
-        players[1].hand = Array(remaining.prefix(5)); remaining.removeFirst(5)
+        let deal0 = dealStartingHand(&remaining)
+        players[0].hand = deal0.hand
+        players[0].camelCount = deal0.camelCount
+        let deal1 = dealStartingHand(&remaining)
+        players[1].hand = deal1.hand
+        players[1].camelCount = deal1.camelCount
 
         let starter = nextRoundStarter(state)
 
@@ -101,6 +109,19 @@ public enum GameEngine {
         market.append(contentsOf: deck.prefix(2))
         deck.removeFirst(2)
         return (market, deck)
+    }
+
+    /// Deals the next 5 cards off `drawPile` as a starting hand. Any camels
+    /// among them go straight to the herd, never into the hand - camels are
+    /// never treated as ordinary hand cards at any point in the game, and
+    /// the initial deal is the one place that distinction isn't already
+    /// enforced by an action's own rules (every in-game action that could
+    /// add a camel to a hand is rejected by `apply`).
+    private static func dealStartingHand(_ drawPile: inout [Card]) -> (hand: [Card], camelCount: Int) {
+        let dealt = Array(drawPile.prefix(5))
+        drawPile.removeFirst(dealt.count)
+        let hand = dealt.filter { $0.good != .camel }
+        return (hand, dealt.count - hand.count)
     }
 
     // MARK: - Actions

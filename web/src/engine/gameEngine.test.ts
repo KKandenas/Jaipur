@@ -35,14 +35,24 @@ function fixtureState(): GameState {
 }
 
 describe("newGame", () => {
-  it("deals 5 cards to each player and seeds >=3 camels in the market", () => {
+  it("deals 5 cards to each player (split between hand and herd) and seeds >=3 camels in the market", () => {
     const state = newGame("A", "Alice", "B", "Bob", seededRandom(1));
-    expect(state.players[0].hand).toHaveLength(5);
-    expect(state.players[1].hand).toHaveLength(5);
+    expect(state.players[0].hand.length + state.players[0].camelCount).toBe(5);
+    expect(state.players[1].hand.length + state.players[1].camelCount).toBe(5);
     expect(state.market).toHaveLength(5);
     expect(state.market.filter((c) => c.good === "camel").length).toBeGreaterThanOrEqual(3);
     expect(state.drawPile).toHaveLength(55 - 5 - 5 - 5);
     expect([state.players[0].id, state.players[1].id]).toContain(state.currentPlayerID);
+  });
+
+  it("never leaves a camel sitting in a starting hand - it always goes to the herd instead", () => {
+    for (let seed = 0; seed < 30; seed++) {
+      const state = newGame("A", "Alice", "B", "Bob", seededRandom(seed));
+      expect(state.players[0].hand.some((c) => c.good === "camel")).toBe(false);
+      expect(state.players[1].hand.some((c) => c.good === "camel")).toBe(false);
+      expect(state.players[0].hand.length + state.players[0].camelCount).toBe(5);
+      expect(state.players[1].hand.length + state.players[1].camelCount).toBe(5);
+    }
   });
 
   it("always seeds at least 3 camels regardless of shuffle", () => {
@@ -302,10 +312,13 @@ describe("startNextRound", () => {
     const next = startNextRound(state, seededRandom(42));
     expect(next.roundNumber).toBe(state.roundNumber + 1);
     expect(next.players[0].roundsWon).toBe(1);
-    expect(next.players[0].camelCount).toBe(0);
     expect(Object.keys(next.players[0].wonTokens)).toHaveLength(0);
-    expect(next.players[0].hand).toHaveLength(5);
-    expect(next.players[1].hand).toHaveLength(5);
+    // The old herd/hand are wiped and re-dealt fresh - any camel among the
+    // new deal goes straight to the herd, never into the hand.
+    expect(next.players[0].hand.some((c) => c.good === "camel")).toBe(false);
+    expect(next.players[1].hand.some((c) => c.good === "camel")).toBe(false);
+    expect(next.players[0].hand.length + next.players[0].camelCount).toBe(5);
+    expect(next.players[1].hand.length + next.players[1].camelCount).toBe(5);
     expect(next.currentPlayerID).toBe("B");
   });
 });
