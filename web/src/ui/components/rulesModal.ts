@@ -34,6 +34,14 @@ export function rulesModalView(): HTMLElement {
           h("p", {}, "Handla varor mot rupier under upp till 3 ronder. Den som vinner 2 ronder vinner matchen.")
         ),
         section(
+          "Upplägg",
+          list(
+            "Marknaden startar med 3 kamelkort plus 2 slumpmässiga varukort - detta sköts automatiskt av appen.",
+            "Varje spelare får 5 kort på hand. Om en kamel skulle delas ut läggs den direkt i din kamelhord istället för på handen (kameler räknas aldrig som ett handkort).",
+            "Varutokens ligger sorterade i högar per vara, högst värde överst. Bonuspolletter för 3-, 4- och 5-korts-försäljningar ligger i egna högar."
+          )
+        ),
+        section(
           "Din tur - gör exakt en sak",
           list(
             "Ta alla kameler som just nu finns på marknaden till din hjord.",

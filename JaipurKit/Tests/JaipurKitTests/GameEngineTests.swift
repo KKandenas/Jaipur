@@ -8,8 +8,8 @@ final class GameEngineTests: XCTestCase {
     func testNewGameDealsFiveAndFive() {
         let rng = SeededGenerator(seed: 1)
         let state = GameEngine.newGame(playerID1: "A", playerName1: "Alice", playerID2: "B", playerName2: "Bob", rng: rng)
-        XCTAssertEqual(state.players[0].hand.count, 5)
-        XCTAssertEqual(state.players[1].hand.count, 5)
+        XCTAssertEqual(state.players[0].hand.count + state.players[0].camelCount, 5)
+        XCTAssertEqual(state.players[1].hand.count + state.players[1].camelCount, 5)
         XCTAssertEqual(state.market.count, 5)
         XCTAssertGreaterThanOrEqual(state.market.filter { $0.good == .camel }.count, 3)
         XCTAssertEqual(state.drawPile.count, 55 - 5 - 5 - 5)
@@ -21,6 +21,17 @@ final class GameEngineTests: XCTestCase {
             let rng = SeededGenerator(seed: seed)
             let state = GameEngine.newGame(playerID1: "A", playerName1: "Alice", playerID2: "B", playerName2: "Bob", rng: rng)
             XCTAssertGreaterThanOrEqual(state.market.filter { $0.good == .camel }.count, 3, "seed \(seed)")
+        }
+    }
+
+    func testStartingHandNeverContainsACamel() {
+        for seed: UInt64 in 0..<30 {
+            let rng = SeededGenerator(seed: seed)
+            let state = GameEngine.newGame(playerID1: "A", playerName1: "Alice", playerID2: "B", playerName2: "Bob", rng: rng)
+            XCTAssertFalse(state.players[0].hand.contains { $0.good == .camel }, "seed \(seed)")
+            XCTAssertFalse(state.players[1].hand.contains { $0.good == .camel }, "seed \(seed)")
+            XCTAssertEqual(state.players[0].hand.count + state.players[0].camelCount, 5, "seed \(seed)")
+            XCTAssertEqual(state.players[1].hand.count + state.players[1].camelCount, 5, "seed \(seed)")
         }
     }
 
@@ -267,10 +278,13 @@ final class GameEngineTests: XCTestCase {
         let next = GameEngine.startNextRound(from: state, rng: SeededGenerator(seed: 42))
         XCTAssertEqual(next.roundNumber, state.roundNumber + 1)
         XCTAssertEqual(next.players[0].roundsWon, 1)
-        XCTAssertEqual(next.players[0].camelCount, 0)
         XCTAssertTrue(next.players[0].wonTokens.isEmpty)
-        XCTAssertEqual(next.players[0].hand.count, 5)
-        XCTAssertEqual(next.players[1].hand.count, 5)
+        // The old herd/hand are wiped and re-dealt fresh - any camel among the
+        // new deal goes straight to the herd, never into the hand.
+        XCTAssertFalse(next.players[0].hand.contains { $0.good == .camel })
+        XCTAssertFalse(next.players[1].hand.contains { $0.good == .camel })
+        XCTAssertEqual(next.players[0].hand.count + next.players[0].camelCount, 5)
+        XCTAssertEqual(next.players[1].hand.count + next.players[1].camelCount, 5)
         // Loser of the previous round (B, lower total) should open the next round.
         XCTAssertEqual(next.currentPlayerID, "B")
     }

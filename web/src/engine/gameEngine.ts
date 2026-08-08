@@ -27,6 +27,22 @@ import {
  * apply, write state) and easy to unit test.
  */
 
+/**
+ * Deals the next 5 cards off `drawPile` as a starting hand. Any camels among
+ * them go straight to the herd, never into the hand - camels are never
+ * treated as ordinary hand cards at any point in the game, and the initial
+ * deal is the one place that distinction isn't already enforced by an
+ * action's own rules (every in-game action that could add a camel to a
+ * hand is rejected by `apply`).
+ */
+function dealStartingHand(drawPile: Card[]): { hand: Card[]; camelCount: number; remaining: Card[] } {
+  const dealt = drawPile.slice(0, 5);
+  const remaining = drawPile.slice(5);
+  const hand = dealt.filter((card) => card.good !== "camel");
+  const camelCount = dealt.length - hand.length;
+  return { hand, camelCount, remaining };
+}
+
 function dealMarketAndDrawPile(random: RandomSource): { market: Card[]; drawPile: Card[] } {
   let deck = shuffled(freshCards(), random);
 
@@ -55,11 +71,13 @@ export function newGame(
   const players: [Player, Player] = [newPlayer(playerID1, playerName1), newPlayer(playerID2, playerName2)];
   const { market, drawPile } = dealMarketAndDrawPile(random);
 
-  let remaining = drawPile;
-  players[0].hand = remaining.slice(0, 5);
-  remaining = remaining.slice(5);
-  players[1].hand = remaining.slice(0, 5);
-  remaining = remaining.slice(5);
+  const deal0 = dealStartingHand(drawPile);
+  players[0].hand = deal0.hand;
+  players[0].camelCount = deal0.camelCount;
+  const deal1 = dealStartingHand(deal0.remaining);
+  players[1].hand = deal1.hand;
+  players[1].camelCount = deal1.camelCount;
+  const remaining = deal1.remaining;
 
   const startingPlayer = random() < 0.5 ? playerID1 : playerID2;
 
@@ -109,11 +127,13 @@ export function startNextRound(input: GameState, random: RandomSource = defaultR
   ) as [Player, Player];
 
   const { market, drawPile } = dealMarketAndDrawPile(random);
-  let remaining = drawPile;
-  players[0].hand = remaining.slice(0, 5);
-  remaining = remaining.slice(5);
-  players[1].hand = remaining.slice(0, 5);
-  remaining = remaining.slice(5);
+  const deal0 = dealStartingHand(drawPile);
+  players[0].hand = deal0.hand;
+  players[0].camelCount = deal0.camelCount;
+  const deal1 = dealStartingHand(deal0.remaining);
+  players[1].hand = deal1.hand;
+  players[1].camelCount = deal1.camelCount;
+  const remaining = deal1.remaining;
 
   return {
     players,
