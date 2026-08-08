@@ -22,9 +22,9 @@ describe("tokenBank", () => {
     const bank = newTokenBank();
     expect(exhaustedStackCount(bank)).toBe(0);
     takeTokens(bank, "diamond", 5);
-    takeTokens(bank, "gold", 6);
+    takeTokens(bank, "gold", 5);
     expect(exhaustedStackCount(bank)).toBe(2);
-    takeTokens(bank, "silver", 6);
+    takeTokens(bank, "silver", 5);
     expect(exhaustedStackCount(bank)).toBe(3);
   });
 });

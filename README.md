@@ -57,15 +57,22 @@ with), and how it looks/feels on a physical iPhone/iPad screen. Test that
 part after you've done the Firebase setup below.
 
 The **goods-token values** (`web/src/engine/tokenBank.ts`,
-`JaipurKit/Sources/JaipurKit/TokenBank.swift`) were reconstructed from
-published Jaipur rules summaries and cross-checked for internal consistency,
-but couldn't be confirmed byte-for-byte against the publisher's own rulebook
-(outbound access to most rules sites was blocked in this environment).
-Double-check that table against your physical rulebook/insert before relying
-on it for real scoring. Everything else - deck composition, the 18 bonus-sale
-tokens, the 5-point camel bonus, the 7-card hand limit, the "sell at least 2"
-rule for diamond/gold/silver, and "first to 2 round wins" - was confirmed via
-multiple independent sources (see [Rules reference](#rules-reference-implemented)).
+`JaipurKit/Sources/JaipurKit/TokenBank.swift`) are confirmed against the
+physical game's component list: 38 tokens total - 5 diamond (7,7,5,5,5),
+5 gold (6,6,5,5,5), 5 silver (5,5,5,5,5), 7 cloth (5,3,3,2,2,1,1), 7 spice
+(5,3,3,2,2,1,1), 9 leather (4,3,2,1,1,1,1,1,1). Deck composition, the
+5-point camel bonus, the 7-card hand limit, the "sell at least 2" rule for
+diamond/gold/silver, and "first to 2 round wins" are confirmed the same way
+(see [Rules reference](#rules-reference-implemented)).
+
+The **18 bonus-sale tokens** (`web/src/engine/bonusTokenBank.ts`,
+`JaipurKit/Sources/JaipurKit/BonusTokenBank.swift`) are the one value table
+still not fully reconciled: this repo uses 7×[3,3,2,2,2,1,1] / 6×[6,6,5,5,4,4]
+/ 5×[10,10,9,8,8], sourced from multiple independent rules summaries via web
+search. A component list provided separately described an even 6/6/6 split
+instead (value ranges 1-3, 4-6, 8-10 rather than exact per-token lists). The
+totals agree (18 either way) but the per-tier counts don't - worth checking
+against the physical tokens before relying on it for real scoring.
 
 Card, card-back, and token artwork (`web/src/assets/`) is original artwork
 supplied for this project - not reproductions of the publisher's cards, so

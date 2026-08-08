@@ -77,6 +77,16 @@ export function rulesModalView(): HTMLElement {
             "Ronden tar slut så fort 3 av de 6 varupollett-högarna tar slut, eller om draghögen inte längre kan fylla på marknaden till 5 kort.",
             "Den med högst totalsumma (polletter + bonusar + kamelbonus) vinner ronden."
           )
+        ),
+        section(
+          "Spelets innehåll",
+          list(
+            "55 kort: 6 diamant, 6 guld, 6 silver, 8 tyg, 8 kryddor, 10 läder, 11 kameler.",
+            "38 varutokens: 5 diamant (7,7,5,5,5), 5 guld (6,6,5,5,5), 5 silver (5,5,5,5,5), 7 tyg (5,3,3,2,2,1,1), 7 kryddor (5,3,3,2,2,1,1), 9 läder (4,3,2,1,1,1,1,1,1).",
+            "18 bonuspolletter för att sälja 3, 4 eller 5+ kort på en gång.",
+            "1 kameltoken värd 5 poäng till den med flest kameler i hjorden.",
+            "3 Excellence-sigill - ett delas ut per rondvinst, och du behöver bara 2 för att vinna matchen."
+          )
         )
       )
     )
