@@ -1,7 +1,7 @@
 import type { Card, GameAction, GameState, GoodType, Player } from "../engine";
 import { findPlayer, opponentOf } from "../engine";
 import { applyAction, startNextRound } from "../firebase/gameService";
-import { clearSelections, openRules, setActiveGameCode, setState, state } from "../state";
+import { clearSelections, openRules, setActiveGameCode, setState, state, toggleBonusTokenRevealed } from "../state";
 import { actionBarView } from "./components/actionBar";
 import { handView } from "./components/hand";
 import { marketView } from "./components/market";
@@ -223,6 +223,8 @@ export function gameView(): HTMLElement {
     root.appendChild(
       roundEndOverlay(gameState, state.uid, {
         busy: state.gameBusy,
+        revealedBonusTokenKeys: state.revealedBonusTokenKeys,
+        onToggleBonusToken: toggleBonusTokenRevealed,
         onNextRound: handleNextRound,
         onLeave: () => setActiveGameCode(null)
       })

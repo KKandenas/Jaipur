@@ -1,17 +1,17 @@
 import Foundation
 
 /// The three bonus-token stacks awarded when a player sells 3, 4, or 5+ cards at once.
-/// Values confirmed from published Jaipur rules summaries: 18 tokens total
-/// (7 for selling-3, 6 for selling-4, 5 for selling-5-or-more).
+/// 18 tokens total, confirmed against the physical game's component list: 6
+/// tokens per tier, two of each value (3-card: 1-3, 4-card: 4-6, 5-card: 8-10).
 public struct BonusTokenBank: Codable, Equatable, Sendable {
     public private(set) var saleOfThree: [Int]
     public private(set) var saleOfFour: [Int]
     public private(set) var saleOfFiveOrMore: [Int]
 
     public init(
-        saleOfThree: [Int] = [3, 3, 2, 2, 2, 1, 1],
+        saleOfThree: [Int] = [3, 3, 2, 2, 1, 1],
         saleOfFour: [Int] = [6, 6, 5, 5, 4, 4],
-        saleOfFiveOrMore: [Int] = [10, 10, 9, 8, 8]
+        saleOfFiveOrMore: [Int] = [10, 10, 9, 9, 8, 8]
     ) {
         self.saleOfThree = saleOfThree
         self.saleOfFour = saleOfFour

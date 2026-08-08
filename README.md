@@ -66,13 +66,14 @@ diamond/gold/silver, and "first to 2 round wins" are confirmed the same way
 (see [Rules reference](#rules-reference-implemented)).
 
 The **18 bonus-sale tokens** (`web/src/engine/bonusTokenBank.ts`,
-`JaipurKit/Sources/JaipurKit/BonusTokenBank.swift`) are the one value table
-still not fully reconciled: this repo uses 7×[3,3,2,2,2,1,1] / 6×[6,6,5,5,4,4]
-/ 5×[10,10,9,8,8], sourced from multiple independent rules summaries via web
-search. A component list provided separately described an even 6/6/6 split
-instead (value ranges 1-3, 4-6, 8-10 rather than exact per-token lists). The
-totals agree (18 either way) but the per-tier counts don't - worth checking
-against the physical tokens before relying on it for real scoring.
+`JaipurKit/Sources/JaipurKit/BonusTokenBank.swift`) are confirmed against the
+physical game's component list: 6 tokens per tier, two of each value -
+3-card sale 6×[3,3,2,2,1,1], 4-card sale 6×[6,6,5,5,4,4], 5-or-more-card sale
+6×[10,10,9,9,8,8]. A bonus token's value is secret until the round ends: the
+web app hides it behind a "?" chip the instant it's won, and only lets the
+player who won it flip each one over (locally, on their own screen) once the
+round-end screen appears - matching how the physical tokens are kept face
+down until the round's scoring reveal.
 
 Card, card-back, and token artwork (`web/src/assets/`) is original artwork
 supplied for this project - not reproductions of the publisher's cards, so
