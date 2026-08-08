@@ -1,0 +1,70 @@
+rules_version = '2';
+
+// Tier-1 rules: enforce *who* can touch a game document (only its two players,
+// only while signed in, only certain field transitions) but NOT whether a given
+// move is legal Jaipur - that validation lives in JaipurKit.GameEngine, which
+// only runs on-device inside the app's Firestore transaction. A player who
+// bypasses the app (e.g. talks to Firestore's REST API directly) could in
+// theory write an illegal `state`. For a private game between friends that's
+// an acceptable trade-off; see the README's "Hardening hidden information"
+// section for the Cloud Functions-based design that removes this gap by
+// making a trusted server the only writer.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /games/{code} {
+      allow read: if isSignedIn() && (isOpenLobby() || isPlayer());
+
+      allow create: if isSignedIn()
+        && request.resource.data.hostID == request.auth.uid
+        && request.resource.data.playerIDs == [request.auth.uid]
+        && request.resource.data.status == 'waiting'
+        && request.resource.data.state == null;
+
+      allow update: if isSignedIn() && (isJoinTransition() || isPlayerMoveTransition());
+
+      allow delete: if isSignedIn()
+        && resource.data.status == 'waiting'
+        && resource.data.hostID == request.auth.uid;
+    }
+  }
+
+  function isSignedIn() {
+    return request.auth != null;
+  }
+
+  function isOpenLobby() {
+    return resource.data.status == 'waiting';
+  }
+
+  function isPlayer() {
+    return request.auth.uid in resource.data.playerIDs;
+  }
+
+  // A second player joining an open lobby: identity fields except playerIDs/
+  // status/state/updatedAt must stay exactly as they were.
+  function isJoinTransition() {
+    return resource.data.status == 'waiting'
+      && resource.data.playerIDs.size() == 1
+      && request.auth.uid != resource.data.hostID
+      && request.resource.data.hostID == resource.data.hostID
+      && request.resource.data.hostName == resource.data.hostName
+      && request.resource.data.createdAt == resource.data.createdAt
+      && request.resource.data.playerIDs == resource.data.playerIDs.concat([request.auth.uid])
+      && request.resource.data.status == 'active'
+      && request.resource.data.state != null;
+  }
+
+  // A move (or "start next round") by one of the two seated players: identity
+  // fields are immutable, only `state`/`status`/`updatedAt` may change.
+  function isPlayerMoveTransition() {
+    return resource.data.status == 'active'
+      && isPlayer()
+      && request.resource.data.hostID == resource.data.hostID
+      && request.resource.data.hostName == resource.data.hostName
+      && request.resource.data.playerIDs == resource.data.playerIDs
+      && request.resource.data.createdAt == resource.data.createdAt
+      && request.resource.data.state != null
+      && (request.resource.data.status == 'active' || request.resource.data.status == 'finished');
+  }
+}

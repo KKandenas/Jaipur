@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  This is a TEMPLATE, not a real config file.
+
+  1. Create a Firebase project at https://console.firebase.google.com
+  2. Add an iOS app to it with bundle ID: com.kkandenas.jaipur
+     (or whatever you set PRODUCT_BUNDLE_IDENTIFIER to in project.yml)
+  3. Download the real GoogleService-Info.plist Firebase generates for you.
+  4. Save it as `GoogleService-Info.plist` (no .example suffix) right next to
+     this file, then drag it into the JaipurApp target in Xcode (make sure
+     "Copy items if needed" and the JaipurApp target membership are checked).
+
+  `GoogleService-Info.plist` is git-ignored on purpose - never commit your
+  real Firebase config to a public repo.
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>REPLACE_ME</string>
+	<key>GCM_SENDER_ID</key>
+	<string>REPLACE_ME</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.kkandenas.jaipur</string>
+	<key>PROJECT_ID</key>
+	<string>REPLACE_ME</string>
+	<key>STORAGE_BUCKET</key>
+	<string>REPLACE_ME.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false/>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false/>
+	<key>IS_APPINVITE_ENABLED</key>
+	<false/>
+	<key>IS_GCM_ENABLED</key>
+	<true/>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true/>
+	<key>GOOGLE_APP_ID</key>
+	<string>REPLACE_ME</string>
+</dict>
+</plist>
