@@ -47,7 +47,7 @@ export function lobbyView(): HTMLElement {
       { class: "lobby__header" },
       h("h1", {}, "Jaipur"),
       h("p", {}, "A two-player caravan of trading"),
-      h("button", { class: "btn btn--text", type: "button", onclick: openRules }, "📜 How to Play")
+      h("button", { class: "btn btn--text", type: "button", onclick: openRules }, "📜 Så spelar du")
     ),
     card(
       h("h2", {}, "Your name"),
