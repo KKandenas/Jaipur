@@ -67,10 +67,13 @@ tokens, the 5-point camel bonus, the 7-card hand limit, the "sell at least 2"
 rule for diamond/gold/silver, and "first to 2 round wins" - was confirmed via
 multiple independent sources (see [Rules reference](#rules-reference-implemented)).
 
-There's also no licensed game artwork (the cards you shared are the
-publisher's IP) - goods are rendered as an emoji + color pairing
-(`web/src/ui/goodStyle.ts`), which is fully playable and easy to re-skin once
-you have real art.
+Card, card-back, and token artwork (`web/src/assets/`) is original artwork
+supplied for this project - not reproductions of the publisher's cards, so
+there's no copyright concern reproducing it here. Camel's card art has no
+matching token (camels aren't a sellable good, so there never was one to
+crop). To swap in different art later, replace the files under
+`web/src/assets/` and update the imports in `web/src/ui/goodStyle.ts` - the
+rest of the UI (`CardView`, `TokenChip`, etc.) just reads from there.
 
 ## Firebase setup
 
