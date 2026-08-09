@@ -49,21 +49,41 @@ export function roundEndOverlay(
     const player = findPlayer(state, result.playerID);
     const name = player?.displayName ?? "Player";
     const isMe = result.playerID === myID;
+
+    const tokenKeys = player ? player.wonBonusTokens.map((_, i) => `${state.roundNumber}-${i}`) : [];
+    const allRevealed = tokenKeys.every((key) => options.revealedBonusTokenKeys.has(key));
+
     const bonusPart: HTMLElement | string =
       isMe && player
         ? bonusFlipRow(player.wonBonusTokens, state.roundNumber, options.revealedBonusTokenKeys, options.onToggleBonusToken)
-        : `${result.bonusValue}`;
+        : `${result.bonusValue} ₹`;
+
+    const totalKnown = !isMe || allRevealed;
+
     return h(
       "div",
-      { class: "round-end__row" },
-      h("span", { class: "round-end__row-name" }, isMe ? `You (${name})` : name),
+      { class: `round-end__row ${isMe ? "round-end__row--me" : ""}` },
       h(
-        "span",
-        { class: "round-end__row-score" },
-        `${result.goodsValue} + `,
+        "div",
+        { class: "round-end__row-header" },
+        h("span", { class: "round-end__row-name" }, isMe ? `You (${name})` : name),
+        h(
+          "span",
+          { class: "round-end__row-total" },
+          totalKnown ? `${roundResultTotal(result)} ₹` : "? ₹"
+        )
+      ),
+      h(
+        "div",
+        { class: "round-end__row-breakdown" },
+        h("span", {}, `${result.goodsValue} ₹ goods`),
+        h("span", {}, "+"),
         bonusPart,
-        ` bonus + ${result.camelBonus} camel = ${roundResultTotal(result)} ₹`
-      )
+        h("span", {}, "bonus"),
+        h("span", {}, "+"),
+        h("span", {}, `${result.camelBonus} ₹ camel`)
+      ),
+      isMe && !allRevealed ? h("p", { class: "round-end__hint" }, "Tap your bonus tokens to reveal them") : null
     );
   };
 
