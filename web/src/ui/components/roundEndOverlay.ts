@@ -19,7 +19,7 @@ function bonusFlipRow(player: Player, onReveal: (playerID: string, tokenIndex: n
           class: `bonus-flip-chip ${revealed ? "bonus-flip-chip--revealed" : ""}`,
           type: "button",
           style: { "--card-image": `url(${tokenImage})` },
-          title: revealed ? undefined : "Tap to reveal",
+          title: revealed ? undefined : "Tryck för att avslöja",
           onclick: revealed ? undefined : () => onReveal(player.id, index)
         },
         revealed ? String(value) : "?"
@@ -40,7 +40,7 @@ export function roundEndOverlay(
 ): HTMLElement {
   const resultRow = (result: RoundResult) => {
     const player = findPlayer(state, result.playerID);
-    const name = player?.displayName ?? "Player";
+    const name = player?.displayName ?? "Spelare";
     const isMe = result.playerID === myID;
     const allRevealed = player ? player.revealedBonusTokenIndices.length >= player.wonBonusTokens.length : true;
 
@@ -50,20 +50,20 @@ export function roundEndOverlay(
       h(
         "div",
         { class: "round-end__row-header" },
-        h("span", { class: "round-end__row-name" }, isMe ? `You (${name})` : name),
+        h("span", { class: "round-end__row-name" }, isMe ? `Du (${name})` : name),
         h("span", { class: "round-end__row-total" }, allRevealed ? `${roundResultTotal(result)} ₹` : "? ₹")
       ),
       h(
         "div",
         { class: "round-end__row-breakdown" },
-        h("span", {}, `${result.goodsValue} ₹ goods`),
+        h("span", {}, `${result.goodsValue} ₹ varor`),
         h("span", {}, "+"),
         player ? bonusFlipRow(player, options.onRevealBonusToken) : `${result.bonusValue} ₹`,
         h("span", {}, "bonus"),
         h("span", {}, "+"),
-        h("span", {}, `${result.camelBonus} ₹ camel`)
+        h("span", {}, `${result.camelBonus} ₹ kameler`)
       ),
-      !allRevealed ? h("p", { class: "round-end__hint" }, "Tap the bonus tokens to reveal them") : null
+      !allRevealed ? h("p", { class: "round-end__hint" }, "Tryck på bonuspoletterna för att avslöja dem") : null
     );
   };
 
@@ -75,21 +75,21 @@ export function roundEndOverlay(
     h(
       "div",
       { class: "overlay__card" },
-      h("h2", {}, state.winnerID ? "Game Over" : `Round ${state.roundNumber} Complete`),
+      h("h2", {}, state.winnerID ? "Spelet är slut" : `Rond ${state.roundNumber} klar`),
       h("div", { class: "round-end__results" }, state.lastRoundResults.map(resultRow)),
       state.winnerID
         ? h(
             "p",
             { class: "round-end__winner" },
-            state.winnerID === myID ? "🎉 You won the match!" : `${winner?.displayName ?? "Opponent"} won the match.`
+            state.winnerID === myID ? "🎉 Du vann matchen!" : `${winner?.displayName ?? "Motståndaren"} vann matchen.`
           )
         : null,
       state.winnerID
-        ? h("button", { class: "btn btn--primary", type: "button", onclick: options.onLeave }, "Back to Lobby")
+        ? h("button", { class: "btn btn--primary", type: "button", onclick: options.onLeave }, "Tillbaka till lobbyn")
         : h(
             "button",
             { class: "btn btn--primary", type: "button", disabled: options.busy, onclick: options.onNextRound },
-            `Start Round ${state.roundNumber + 1}`
+            `Starta rond ${state.roundNumber + 1}`
           )
     )
   );

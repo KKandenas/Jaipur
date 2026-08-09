@@ -32,7 +32,7 @@ const DISPLAY_NAME_KEY = "jaipur.displayName";
 const GAME_CODE_KEY = "jaipur.gameCode";
 
 function loadDisplayName(): string {
-  return localStorage.getItem(DISPLAY_NAME_KEY) ?? `Trader${Math.floor(100 + Math.random() * 900)}`;
+  return localStorage.getItem(DISPLAY_NAME_KEY) ?? `Handlare${Math.floor(100 + Math.random() * 900)}`;
 }
 
 export const state: AppState = {

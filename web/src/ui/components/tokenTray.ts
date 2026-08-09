@@ -18,7 +18,7 @@ export function tokenTrayView(tokenBank: TokenBank): HTMLElement {
         {
           class: `token-chip ${depleted ? "token-chip--empty" : ""}`,
           style: { "--card-color": style.color, "--card-image": `url(${style.tokenImage})` },
-          title: `${style.label}: ${values.length} left`
+          title: `${style.label}: ${values.length} kvar`
         },
         h("span", { class: "token-chip__value" }, depleted ? "—" : String(values[0])),
         h("span", { class: "token-chip__count" }, String(values.length))
@@ -38,7 +38,7 @@ export function bonusTokenSummaryView(bank: BonusTokenBank): HTMLElement {
         {
           class: "bonus-chip__value",
           style: { "--card-image": `url(${tokenImage})` },
-          title: `${values.length} left - value hidden until you take one`
+          title: `${values.length} kvar - värdet är dolt tills du tar en`
         },
         values.length > 0 ? "?" : "—"
       )

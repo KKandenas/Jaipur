@@ -33,19 +33,19 @@ export function actionBarView(o: ActionBarOptions): HTMLElement {
 
   if (o.mode === "none") {
     bar.append(
-      button("🐫 Take Camels", { disabled: !o.isMyTurn || !o.canTakeCamels || o.busy, onClick: o.onTakeCamels }),
-      button("⇄ Trade", { disabled: !o.isMyTurn || o.busy, onClick: o.onStartExchange }),
-      button("₹ Sell", { disabled: !o.isMyTurn || o.busy, onClick: o.onStartSell })
+      button("🐫 Ta kameler", { disabled: !o.isMyTurn || !o.canTakeCamels || o.busy, onClick: o.onTakeCamels }),
+      button("⇄ Byt", { disabled: !o.isMyTurn || o.busy, onClick: o.onStartExchange }),
+      button("₹ Sälj", { disabled: !o.isMyTurn || o.busy, onClick: o.onStartSell })
     );
   } else {
     const hint =
       o.mode === "exchanging"
-        ? "Pick 2–5 market cards, then match with hand cards + camels."
-        : "Pick cards of one good to sell.";
+        ? "Välj 2–5 marknadskort, matcha sedan med handkort + kameler."
+        : "Välj kort av samma vara att sälja.";
     bar.append(
       h("p", { class: "action-bar__hint" }, hint),
-      button("Cancel", { secondary: true, onClick: o.onCancel }),
-      button("Confirm", {
+      button("Avbryt", { secondary: true, onClick: o.onCancel }),
+      button("Bekräfta", {
         disabled: o.busy || (o.mode === "exchanging" ? !o.canConfirmExchange : !o.canConfirmSell),
         onClick: o.onConfirm
       })

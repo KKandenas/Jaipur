@@ -3,6 +3,7 @@ import { findPlayer, opponentOf } from "../engine";
 import { applyAction, revealBonusToken, startNextRound } from "../firebase/gameService";
 import { clearSelections, openRules, setActiveGameCode, setState, state } from "../state";
 import { actionBarView } from "./components/actionBar";
+import { describeError } from "./errorMessages";
 import { handView } from "./components/hand";
 import { marketView } from "./components/market";
 import { playerBarView } from "./components/playerBar";
@@ -56,7 +57,7 @@ async function perform(action: GameAction): Promise<void> {
     await applyAction(action, state.gameCode, state.uid);
     clearSelections();
   } catch (error) {
-    setState({ gameError: (error as Error).message });
+    setState({ gameError: describeError(error) });
   } finally {
     setState({ gameBusy: false });
   }
@@ -67,7 +68,7 @@ async function handleRevealBonusToken(playerID: string, tokenIndex: number): Pro
   try {
     await revealBonusToken(state.gameCode, playerID, tokenIndex);
   } catch (error) {
-    setState({ gameError: (error as Error).message });
+    setState({ gameError: describeError(error) });
   }
 }
 
@@ -77,7 +78,7 @@ async function handleNextRound(): Promise<void> {
   try {
     await startNextRound(state.gameCode);
   } catch (error) {
-    setState({ gameError: (error as Error).message });
+    setState({ gameError: describeError(error) });
   } finally {
     setState({ gameBusy: false });
   }
@@ -126,16 +127,16 @@ function waitingForOpponentView(code: string): HTMLElement {
   return h(
     "div",
     { class: "game game--loading" },
-    h("p", {}, "Share this code with your opponent:"),
+    h("p", {}, "Dela den här koden med din motståndare:"),
     h(
       "button",
       { class: "game__code-big", type: "button", onclick: () => copyCode(code) },
       code,
-      h("span", { class: "game__code-hint" }, "tap to copy")
+      h("span", { class: "game__code-hint" }, "tryck för att kopiera")
     ),
-    h("p", { class: "lobby__hint" }, "Waiting for them to join…"),
+    h("p", { class: "lobby__hint" }, "Väntar på att de ska gå med…"),
     h("button", { class: "btn btn--text", type: "button", onclick: openRules }, "📜 Så spelar du"),
-    h("button", { class: "btn btn--secondary", type: "button", onclick: () => setActiveGameCode(null) }, "Leave"),
+    h("button", { class: "btn btn--secondary", type: "button", onclick: () => setActiveGameCode(null) }, "Lämna"),
     state.showRules ? rulesModalView() : null
   );
 }
@@ -150,8 +151,8 @@ export function gameView(): HTMLElement {
     return h(
       "div",
       { class: "game game--loading" },
-      h("p", {}, "Waiting for the game to start…"),
-      h("button", { class: "btn btn--secondary", type: "button", onclick: () => setActiveGameCode(null) }, "Leave")
+      h("p", {}, "Väntar på att spelet ska starta…"),
+      h("button", { class: "btn btn--secondary", type: "button", onclick: () => setActiveGameCode(null) }, "Lämna")
     );
   }
 
@@ -170,7 +171,7 @@ export function gameView(): HTMLElement {
     h(
       "div",
       { class: "game__topbar" },
-      h("button", { class: "btn btn--text", type: "button", onclick: () => setActiveGameCode(null) }, "← Leave"),
+      h("button", { class: "btn btn--text", type: "button", onclick: () => setActiveGameCode(null) }, "← Lämna"),
       h("span", { class: "game__code" }, state.gameCode ?? ""),
       h("button", { class: "btn btn--text", type: "button", onclick: openRules }, "📜 Regler")
     ),
@@ -253,7 +254,7 @@ function camelStepper(camelCount: number): HTMLElement {
     "div",
     { class: "stepper" },
     h("button", { class: "btn btn--secondary", type: "button", onclick: dec }, "−"),
-    h("span", {}, `Give ${state.selectedCamelsToGive} camel${state.selectedCamelsToGive === 1 ? "" : "s"} from herd`),
+    h("span", {}, `Ge ${state.selectedCamelsToGive} kamel${state.selectedCamelsToGive === 1 ? "" : "er"} från hjorden`),
     h("button", { class: "btn btn--secondary", type: "button", onclick: inc }, "+")
   );
 }
