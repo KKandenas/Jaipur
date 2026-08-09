@@ -15,12 +15,12 @@ export function playerBarView(player: Player, options: { isCurrentTurn: boolean;
         options.isCurrentTurn ? h("span", { class: "player-bar__turn-dot" }) : null,
         player.displayName
       ),
-      h("div", { class: "player-bar__rounds" }, `${player.roundsWon} round win${player.roundsWon === 1 ? "" : "s"}`)
+      h("div", { class: "player-bar__rounds" }, `${player.roundsWon} rondvinst${player.roundsWon === 1 ? "" : "er"}`)
     ),
     h(
       "div",
       { class: "player-bar__stat" },
-      h("img", { class: "player-bar__icon", src: goodStyle("camel").cardImage, alt: "Camels" }),
+      h("img", { class: "player-bar__icon", src: goodStyle("camel").cardImage, alt: "Kameler" }),
       String(player.camelCount)
     ),
     options.showHandCount ? h("div", { class: "player-bar__stat" }, `🂠 ${player.hand.length}`) : null,
@@ -29,7 +29,7 @@ export function playerBarView(player: Player, options: { isCurrentTurn: boolean;
           "div",
           {
             class: "player-bar__stat player-bar__stat--bonus",
-            title: "Bonus tokens - value hidden until the round ends"
+            title: "Bonuspoletter - värdet är dolt tills ronden är slut"
           },
           "🎁",
           String(player.wonBonusTokens.length)

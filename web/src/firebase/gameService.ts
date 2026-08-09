@@ -57,7 +57,7 @@ export async function createGame(hostID: string, hostName: string): Promise<stri
     await setDoc(ref, document);
     return code;
   }
-  throw new GameServiceError("Could not create a new game right now. Try again.");
+  throw new GameServiceError("Kunde inte skapa ett nytt spel just nu. Försök igen.");
 }
 
 export async function joinGame(code: string, guestID: string, guestName: string): Promise<void> {
@@ -65,14 +65,14 @@ export async function joinGame(code: string, guestID: string, guestName: string)
   await runTransaction(requireDb(), async (transaction) => {
     const snapshot = await transaction.get(ref);
     if (!snapshot.exists()) {
-      throw new GameServiceError("No game found with that code.");
+      throw new GameServiceError("Hittade inget spel med den koden.");
     }
     const document = snapshot.data() as GameDocument;
     if (document.playerIDs.includes(guestID)) {
       return; // already joined - e.g. app relaunch mid-game
     }
     if (document.status !== "waiting" || document.playerIDs.length !== 1) {
-      throw new GameServiceError("That game already has two players.");
+      throw new GameServiceError("Det spelet har redan två spelare.");
     }
 
     const state = newGame(document.hostID, document.hostName, guestID, guestName);
@@ -98,9 +98,9 @@ export async function applyAction(action: GameAction, code: string, playerID: st
   const ref = gameRef(code);
   await runTransaction(requireDb(), async (transaction) => {
     const snapshot = await transaction.get(ref);
-    if (!snapshot.exists()) throw new GameServiceError("This game no longer exists.");
+    if (!snapshot.exists()) throw new GameServiceError("Spelet finns inte längre.");
     const document = snapshot.data() as GameDocument;
-    if (!document.state) throw new GameServiceError("The game hasn't started yet.");
+    if (!document.state) throw new GameServiceError("Spelet har inte startat än.");
 
     const nextState = apply(action, playerID, document.state);
     const next: GameDocument = {
@@ -117,9 +117,9 @@ export async function revealBonusToken(code: string, playerID: string, tokenInde
   const ref = gameRef(code);
   await runTransaction(requireDb(), async (transaction) => {
     const snapshot = await transaction.get(ref);
-    if (!snapshot.exists()) throw new GameServiceError("This game no longer exists.");
+    if (!snapshot.exists()) throw new GameServiceError("Spelet finns inte längre.");
     const document = snapshot.data() as GameDocument;
-    if (!document.state) throw new GameServiceError("The game hasn't started yet.");
+    if (!document.state) throw new GameServiceError("Spelet har inte startat än.");
 
     const nextState = engineRevealBonusToken(document.state, playerID, tokenIndex);
     const next: GameDocument = { ...document, state: nextState, updatedAt: Date.now() };
@@ -131,9 +131,9 @@ export async function startNextRound(code: string): Promise<void> {
   const ref = gameRef(code);
   await runTransaction(requireDb(), async (transaction) => {
     const snapshot = await transaction.get(ref);
-    if (!snapshot.exists()) throw new GameServiceError("This game no longer exists.");
+    if (!snapshot.exists()) throw new GameServiceError("Spelet finns inte längre.");
     const document = snapshot.data() as GameDocument;
-    if (!document.state) throw new GameServiceError("The game hasn't started yet.");
+    if (!document.state) throw new GameServiceError("Spelet har inte startat än.");
     if (!document.state.roundEndReason || document.state.winnerID) return;
 
     const next: GameDocument = {

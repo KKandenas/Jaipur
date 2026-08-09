@@ -1,6 +1,7 @@
 import { createGame, joinGame } from "../firebase/gameService";
 import { effectiveDisplayName, openRules, setActiveGameCode, setDisplayName, setState, state } from "../state";
 import { rulesModalView } from "./components/rulesModal";
+import { describeError } from "./errorMessages";
 import { h } from "./h";
 
 async function handleCreate(): Promise<void> {
@@ -10,7 +11,7 @@ async function handleCreate(): Promise<void> {
     const code = await createGame(state.uid, effectiveDisplayName());
     setActiveGameCode(code);
   } catch (error) {
-    setState({ lobbyError: (error as Error).message });
+    setState({ lobbyError: describeError(error) });
   } finally {
     setState({ lobbyBusy: false });
   }
@@ -20,7 +21,7 @@ async function handleJoin(): Promise<void> {
   if (!state.uid) return;
   const code = state.joinCodeInput.trim().toUpperCase();
   if (!code) {
-    setState({ lobbyError: "Enter a game code first." });
+    setState({ lobbyError: "Ange en spelkod först." });
     return;
   }
   setState({ lobbyBusy: true, lobbyError: null });
@@ -28,7 +29,7 @@ async function handleJoin(): Promise<void> {
     await joinGame(code, state.uid, effectiveDisplayName());
     setActiveGameCode(code);
   } catch (error) {
-    setState({ lobbyError: (error as Error).message });
+    setState({ lobbyError: describeError(error) });
   } finally {
     setState({ lobbyBusy: false });
   }
@@ -46,11 +47,11 @@ export function lobbyView(): HTMLElement {
       "div",
       { class: "lobby__header" },
       h("h1", {}, "Jaipur"),
-      h("p", {}, "A two-player caravan of trading"),
+      h("p", {}, "En handelskaravan för två spelare"),
       h("button", { class: "btn btn--text", type: "button", onclick: openRules }, "📜 Så spelar du")
     ),
     card(
-      h("h2", {}, "Your name"),
+      h("h2", {}, "Ditt namn"),
       h("input", {
         id: "display-name-input",
         class: "text-input",
@@ -61,21 +62,21 @@ export function lobbyView(): HTMLElement {
       })
     ),
     card(
-      h("h2", {}, "Start a new game"),
-      h("p", { class: "lobby__hint" }, "You'll get a 5-character code to share with your opponent."),
+      h("h2", {}, "Starta ett nytt spel"),
+      h("p", { class: "lobby__hint" }, "Du får en 5-teckenskod att dela med din motståndare."),
       h(
         "button",
         { class: "btn btn--primary btn--block", type: "button", disabled: state.lobbyBusy || !state.uid, onclick: handleCreate },
-        "Create Game"
+        "Skapa spel"
       )
     ),
     card(
-      h("h2", {}, "Join a game"),
+      h("h2", {}, "Gå med i ett spel"),
       h("input", {
         id: "join-code-input",
         class: "text-input",
         type: "text",
-        placeholder: "Game code",
+        placeholder: "Spelkod",
         value: state.joinCodeInput,
         maxlength: "5",
         autocapitalize: "characters",
@@ -89,12 +90,12 @@ export function lobbyView(): HTMLElement {
           disabled: state.lobbyBusy || !state.uid,
           onclick: handleJoin
         },
-        "Join Game"
+        "Gå med"
       )
     ),
-    state.lobbyBusy ? h("p", { class: "lobby__status" }, "Working…") : null,
+    state.lobbyBusy ? h("p", { class: "lobby__status" }, "Arbetar…") : null,
     state.lobbyError ? h("p", { class: "lobby__error" }, state.lobbyError) : null,
-    state.authError ? h("p", { class: "lobby__error" }, `Sign-in failed: ${state.authError}`) : null,
+    state.authError ? h("p", { class: "lobby__error" }, `Inloggning misslyckades: ${state.authError}`) : null,
     state.showRules ? rulesModalView() : null
   );
 }

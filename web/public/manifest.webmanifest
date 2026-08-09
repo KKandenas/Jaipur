@@ -1,7 +1,7 @@
 {
   "name": "Jaipur",
   "short_name": "Jaipur",
-  "description": "Play the two-player card game Jaipur with a friend, live, from any browser.",
+  "description": "Spela kortspelet Jaipur för två spelare med en vän, live, från valfri webbläsare.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
