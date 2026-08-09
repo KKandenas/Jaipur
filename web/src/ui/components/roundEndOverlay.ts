@@ -69,28 +69,43 @@ export function roundEndOverlay(
 
   const winner = state.winnerID ? findPlayer(state, state.winnerID) : undefined;
 
+  // The winner is already decided internally the moment the round ends, but
+  // announcing it before both players have flipped their bonus tokens would
+  // spoil the reveal - wait until every bonus token in this round's results
+  // is face-up before showing who won.
+  const allBonusTokensRevealed = state.lastRoundResults.every((result) => {
+    const player = findPlayer(state, result.playerID);
+    return player ? player.revealedBonusTokenIndices.length >= player.wonBonusTokens.length : true;
+  });
+  const gameOver = state.winnerID !== null && allBonusTokensRevealed;
+
   return h(
     "div",
     { class: "overlay" },
     h(
       "div",
       { class: "overlay__card" },
-      h("h2", {}, state.winnerID ? "Spelet är slut" : `Rond ${state.roundNumber} klar`),
+      h("h2", {}, gameOver ? "Spelet är slut" : `Rond ${state.roundNumber} klar`),
       h("div", { class: "round-end__results" }, state.lastRoundResults.map(resultRow)),
-      state.winnerID
+      gameOver
         ? h(
             "p",
             { class: "round-end__winner" },
             state.winnerID === myID ? "🎉 Du vann matchen!" : `${winner?.displayName ?? "Motståndaren"} vann matchen.`
           )
         : null,
-      state.winnerID
+      state.winnerID && !allBonusTokensRevealed
+        ? h("p", { class: "round-end__hint" }, "Avslöja alla bonuspoletter för att se vem som vann matchen")
+        : null,
+      gameOver
         ? h("button", { class: "btn btn--primary", type: "button", onclick: options.onLeave }, "Tillbaka till lobbyn")
-        : h(
-            "button",
-            { class: "btn btn--primary", type: "button", disabled: options.busy, onclick: options.onNextRound },
-            `Starta rond ${state.roundNumber + 1}`
-          )
+        : state.winnerID
+          ? null
+          : h(
+              "button",
+              { class: "btn btn--primary", type: "button", disabled: options.busy, onclick: options.onNextRound },
+              `Starta rond ${state.roundNumber + 1}`
+            )
     )
   );
 }
