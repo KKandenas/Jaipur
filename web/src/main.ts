@@ -5,11 +5,14 @@ import { setState, state, subscribe } from "./state";
 import { mount } from "./ui/h";
 import { gameView } from "./ui/gameView";
 import { lobbyView } from "./ui/lobbyView";
+import { initAppHeightTracking, updateAppHeight } from "./viewport";
 
 const root = document.getElementById("app");
 if (!root) {
   throw new Error("Missing #app root element");
 }
+
+initAppHeightTracking();
 
 function render(): void {
   syncGameSubscription();
@@ -33,6 +36,7 @@ ensureSignedIn()
  * without waiting for a reload.
  */
 function refreshOnResume(): void {
+  updateAppHeight();
   if (document.visibilityState === "hidden") return;
   syncGameSubscription(true);
 }
