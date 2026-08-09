@@ -50,6 +50,12 @@ export interface Player {
   wonTokens: Partial<Record<GoodType, number[]>>;
   /** Bonus tokens won this round. */
   wonBonusTokens: number[];
+  /**
+   * Indices into `wonBonusTokens` that either player has flipped face-up
+   * during this round's scoring reveal. Synced like the rest of `GameState`
+   * so a flip either player makes shows up on both screens.
+   */
+  revealedBonusTokenIndices: number[];
   /** Round wins across the whole match (first to 2 wins the game). */
   roundsWon: number;
 }
@@ -57,7 +63,16 @@ export interface Player {
 export const HAND_LIMIT = 7;
 
 export function newPlayer(id: string, displayName: string): Player {
-  return { id, displayName, hand: [], camelCount: 0, wonTokens: {}, wonBonusTokens: [], roundsWon: 0 };
+  return {
+    id,
+    displayName,
+    hand: [],
+    camelCount: 0,
+    wonTokens: {},
+    wonBonusTokens: [],
+    revealedBonusTokenIndices: [],
+    roundsWon: 0
+  };
 }
 
 export function roundGoodsValue(player: Player): number {

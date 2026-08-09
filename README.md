@@ -70,10 +70,15 @@ The **18 bonus-sale tokens** (`web/src/engine/bonusTokenBank.ts`,
 physical game's component list: 6 tokens per tier, two of each value -
 3-card sale 6×[3,3,2,2,1,1], 4-card sale 6×[6,6,5,5,4,4], 5-or-more-card sale
 6×[10,10,9,9,8,8]. A bonus token's value is secret until the round ends: the
-web app hides it behind a "?" chip the instant it's won, and only lets the
-player who won it flip each one over (locally, on their own screen) once the
-round-end screen appears - matching how the physical tokens are kept face
-down until the round's scoring reveal.
+web app hides it behind a "?" chip the instant it's won (also true of the
+market's still-unclaimed bonus stacks - only the tier is ever shown, never
+the top value), and only reveals it once someone taps it on the round-end
+screen. Either player can flip either player's tokens, and the flip is
+synced through Firestore (`Player.revealedBonusTokenIndices` in
+`GameState`) so it shows up on both screens the same way - matching how the
+physical tokens are flipped together at the table. Each row's own total
+stays hidden as "? ₹" until every one of that player's tokens has been
+flipped.
 
 Card, card-back, and token artwork (`web/src/assets/`) is original artwork
 supplied for this project - not reproductions of the publisher's cards, so
@@ -119,6 +124,14 @@ You said no Firebase project exists yet:
    firebase use --add        # pick the project you just created
    firebase deploy --only firestore
    ```
+
+   **If you already ran this once before** (i.e. you set the project up
+   before the bonus-token reveal feature was added): re-run
+   `firebase deploy --only firestore` to pick up the new
+   `isBonusRevealTransition` rule. Without it, flipping a bonus token still
+   works for round 1 - it only fails on the match's final, deciding round,
+   because the game is already marked `finished` by the time anyone gets to
+   flip a token.
 
 ## Architecture (web app)
 

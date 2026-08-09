@@ -1,7 +1,7 @@
 import type { Card, GameAction, GameState, GoodType, Player } from "../engine";
 import { findPlayer, opponentOf } from "../engine";
-import { applyAction, startNextRound } from "../firebase/gameService";
-import { clearSelections, openRules, setActiveGameCode, setState, state, toggleBonusTokenRevealed } from "../state";
+import { applyAction, revealBonusToken, startNextRound } from "../firebase/gameService";
+import { clearSelections, openRules, setActiveGameCode, setState, state } from "../state";
 import { actionBarView } from "./components/actionBar";
 import { handView } from "./components/hand";
 import { marketView } from "./components/market";
@@ -59,6 +59,15 @@ async function perform(action: GameAction): Promise<void> {
     setState({ gameError: (error as Error).message });
   } finally {
     setState({ gameBusy: false });
+  }
+}
+
+async function handleRevealBonusToken(playerID: string, tokenIndex: number): Promise<void> {
+  if (!state.gameCode) return;
+  try {
+    await revealBonusToken(state.gameCode, playerID, tokenIndex);
+  } catch (error) {
+    setState({ gameError: (error as Error).message });
   }
 }
 
@@ -223,8 +232,7 @@ export function gameView(): HTMLElement {
     root.appendChild(
       roundEndOverlay(gameState, state.uid, {
         busy: state.gameBusy,
-        revealedBonusTokenKeys: state.revealedBonusTokenKeys,
-        onToggleBonusToken: toggleBonusTokenRevealed,
+        onRevealBonusToken: handleRevealBonusToken,
         onNextRound: handleNextRound,
         onLeave: () => setActiveGameCode(null)
       })

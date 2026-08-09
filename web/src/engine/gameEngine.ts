@@ -122,7 +122,8 @@ export function startNextRound(input: GameState, random: RandomSource = defaultR
       hand: [],
       camelCount: 0,
       wonTokens: {},
-      wonBonusTokens: []
+      wonBonusTokens: [],
+      revealedBonusTokenIndices: []
     })
   ) as [Player, Player];
 
@@ -148,6 +149,23 @@ export function startNextRound(input: GameState, random: RandomSource = defaultR
     lastRoundResults: [],
     winnerID: null
   };
+}
+
+/**
+ * Flips one of `playerID`'s bonus tokens face-up. Deliberately not gated by
+ * turn order or round/game-over state - either player can flip either
+ * player's tokens at any point once they're won, matching the physical
+ * game's simultaneous reveal at scoring time. Idempotent: flipping an
+ * already-revealed token is a no-op.
+ */
+export function revealBonusToken(input: GameState, playerID: string, tokenIndex: number): GameState {
+  const state = structuredClone(input);
+  const player = state.players.find((p) => p.id === playerID);
+  if (!player || tokenIndex < 0 || tokenIndex >= player.wonBonusTokens.length) return state;
+  if (!player.revealedBonusTokenIndices.includes(tokenIndex)) {
+    player.revealedBonusTokenIndices.push(tokenIndex);
+  }
+  return state;
 }
 
 export function apply(action: GameAction, playerID: string, input: GameState): GameState {

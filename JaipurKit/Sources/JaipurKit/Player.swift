@@ -16,6 +16,11 @@ public struct Player: Codable, Equatable, Identifiable, Sendable {
     /// Bonus tokens won this round (values only; the two "kinds" of bonus stack are not distinguished on score).
     public var wonBonusTokens: [Int]
 
+    /// Indices into `wonBonusTokens` that either player has flipped face-up during this
+    /// round's scoring reveal. Synced like the rest of `GameState` so a flip either
+    /// player makes shows up on both screens.
+    public var revealedBonusTokenIndices: [Int]
+
     /// Round wins across the whole match (first to 2 wins the game).
     public var roundsWon: Int
 
@@ -26,6 +31,7 @@ public struct Player: Codable, Equatable, Identifiable, Sendable {
         camelCount: Int = 0,
         wonTokens: [GoodType: [Int]] = [:],
         wonBonusTokens: [Int] = [],
+        revealedBonusTokenIndices: [Int] = [],
         roundsWon: Int = 0
     ) {
         self.id = id
@@ -34,6 +40,7 @@ public struct Player: Codable, Equatable, Identifiable, Sendable {
         self.camelCount = camelCount
         self.wonTokens = wonTokens
         self.wonBonusTokens = wonBonusTokens
+        self.revealedBonusTokenIndices = revealedBonusTokenIndices
         self.roundsWon = roundsWon
     }
 
