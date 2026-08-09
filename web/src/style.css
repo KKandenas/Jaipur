@@ -598,12 +598,15 @@ button {
 
 .bonus-flip-row {
   display: inline-flex;
-  gap: 3px;
+  gap: 8px;
 }
 
 .bonus-flip-chip {
-  width: 24px;
-  height: 24px;
+  /* At least a 36px hit target (Apple HIG recommends 44pt, this is close and
+     keeps the row from overflowing narrow phones) - the previous 24px chips
+     were easy to miss/mistap, which read as "nothing happens when I tap". */
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   border: none;
   background-color: rgba(0, 0, 0, 0.25);
@@ -612,7 +615,7 @@ button {
   background-position: center;
   color: #fff;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
-  font-size: 0.7rem;
+  font-size: 0.85rem;
   font-weight: 800;
   display: inline-flex;
   align-items: center;
@@ -781,9 +784,9 @@ button {
   }
 
   .bonus-flip-chip {
-    width: 30px;
-    height: 30px;
-    font-size: 0.85rem;
+    width: 42px;
+    height: 42px;
+    font-size: 1rem;
   }
 
   .player-bar__icon {
