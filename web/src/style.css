@@ -38,7 +38,11 @@ button {
 
 .lobby {
   min-height: var(--app-height, 100dvh);
-  background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+  background-color: var(--bg-bottom);
+  background-image: url("./assets/background.jpg");
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -151,7 +155,11 @@ button {
 .game {
   height: var(--app-height, 100dvh);
   overflow-y: auto;
-  background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+  background-color: var(--bg-bottom);
+  background-image: url("./assets/background.jpg");
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
   display: flex;
   flex-direction: column;
   gap: 10px;
