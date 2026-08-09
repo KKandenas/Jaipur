@@ -307,9 +307,13 @@ button {
   height: 82px;
   border-radius: 10px;
   border: 1px solid rgba(0, 0, 0, 0.15);
-  background-color: var(--card-color);
+  background-color: #e8e4dd;
   background-image: var(--card-image);
-  background-size: cover;
+  /* `contain` (not `cover`) so the card artwork's own printed white border
+     stays fully visible on all four sides instead of being cropped off -
+     the source photos are narrower/taller than this box. The fill color
+     matches that printed border so the letterboxed edges are seamless. */
+  background-size: contain;
   background-position: center;
   display: block;
   padding: 0;
@@ -335,6 +339,7 @@ button {
 
 .card--back {
   background-color: #1c5952;
+  background-size: cover;
 }
 
 /* ---------- Market / hand ---------- */
