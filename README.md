@@ -164,6 +164,13 @@ You said no Firebase project exists yet:
   UID is all the engine needs to tell the two players apart.
 - The exact same `games/{code}` document shape is used here as in the native
   Swift version below, so `firebase/firestore.rules` works for either.
+- **`web/src/gameSession.ts`** owns the `onSnapshot` listener behind the
+  board. iOS Safari (particularly a PWA on the home screen) can silently
+  drop that connection while backgrounded without the SDK noticing, so
+  moves from the other device stop arriving until something re-subscribes.
+  `main.ts` forces a fresh subscription on `visibilitychange`/`pageshow`/
+  `focus`/`online`, plus a 15s interval safety net while a game is open, so
+  that no longer requires a manual page reload to notice.
 
 ### Hardening hidden information (not built here)
 
