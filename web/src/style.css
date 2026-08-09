@@ -207,8 +207,10 @@ button {
 .game__board {
   flex: 1;
   display: flex;
+  flex-direction: column;
   gap: 10px;
   min-height: 0;
+  justify-content: center;
 }
 
 .game__market-column {
@@ -362,10 +364,11 @@ button {
 
 .token-tray {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 6px;
-  align-content: start;
-  width: 108px;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
 }
 
 .token-chip {
@@ -693,7 +696,7 @@ button {
   }
 
   .token-tray {
-    width: 150px;
+    max-width: 480px;
     gap: 10px;
   }
 
