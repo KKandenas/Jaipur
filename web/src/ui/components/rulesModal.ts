@@ -1,4 +1,10 @@
+import type { GoodType } from "../../engine";
+import { SELLABLE_GOODS } from "../../engine";
+import bonusThree from "../../assets/bonus/three.png";
+import bonusFour from "../../assets/bonus/four.png";
+import bonusFive from "../../assets/bonus/five.png";
 import { closeRules } from "../../state";
+import { goodStyle } from "../goodStyle";
 import { h } from "../h";
 
 function section(title: string, ...body: HTMLElement[]): HTMLElement {
@@ -11,6 +17,24 @@ function list(...items: string[]): HTMLElement {
     {},
     ...items.map((item) => h("li", {}, item))
   );
+}
+
+function cardThumb(good: GoodType): HTMLElement {
+  const style = goodStyle(good);
+  return h("img", { class: "rules-thumb rules-thumb--card", src: style.cardImage, alt: style.label });
+}
+
+function tokenThumb(good: GoodType): HTMLElement {
+  const style = goodStyle(good);
+  return h("img", { class: "rules-thumb rules-thumb--token", src: style.tokenImage ?? style.cardImage, alt: `${style.label}-token` });
+}
+
+function bonusThumb(image: string, label: string): HTMLElement {
+  return h("img", { class: "rules-thumb rules-thumb--token", src: image, alt: label });
+}
+
+function thumbRow(...thumbs: HTMLElement[]): HTMLElement {
+  return h("div", { class: "rules-thumb-row" }, ...thumbs);
 }
 
 export function rulesModalView(): HTMLElement {
@@ -52,16 +76,24 @@ export function rulesModalView(): HTMLElement {
         ),
         section(
           "Att sälja",
+          thumbRow(cardThumb("diamond"), cardThumb("gold"), cardThumb("silver")),
+          h("p", { class: "rules-thumb-caption" }, "Diamanter, guld och silver: sälj minst 2 åt gången."),
+          thumbRow(cardThumb("cloth"), cardThumb("spice"), cardThumb("leather")),
+          h("p", { class: "rules-thumb-caption" }, "Tyg, kryddor och läder: sälj valfritt antal, även bara 1."),
           list(
-            "Diamanter, guld och silver: sälj minst 2 åt gången.",
-            "Tyg, kryddor och läder: sälj valfritt antal, även bara 1.",
             "Du får de översta polletterna från varans hög - polletterna går från högt till lågt värde, så det lönar sig att sälja tidigt.",
-            "Att sälja 3 eller fler kort samtidigt ger även en bonuspollett (större försäljningar ger större bonusar).",
+            "Att sälja 3 eller fler kort samtidigt ger även en bonuspollett (större försäljningar ger större bonusar)."
+          ),
+          thumbRow(bonusThumb(bonusThree, "3-korts bonus"), bonusThumb(bonusFour, "4-korts bonus"), bonusThumb(bonusFive, "5-korts bonus")),
+          h(
+            "p",
+            { class: "rules-thumb-caption" },
             "Bonuspollettens värde är hemligt - du ser bara att du fått en, inte vad den är värd förrän ronden är slut och du vänder på den."
           )
         ),
         section(
           "Kameler",
+          thumbRow(cardThumb("camel")),
           h(
             "p",
             {},
@@ -81,10 +113,15 @@ export function rulesModalView(): HTMLElement {
         ),
         section(
           "Spelets innehåll",
+          list("55 kort: 6 diamant, 6 guld, 6 silver, 8 tyg, 8 kryddor, 10 läder, 11 kameler."),
+          thumbRow(...["camel", ...SELLABLE_GOODS].map((good) => cardThumb(good as GoodType))),
           list(
-            "55 kort: 6 diamant, 6 guld, 6 silver, 8 tyg, 8 kryddor, 10 läder, 11 kameler.",
-            "38 varutokens: 5 diamant (7,7,5,5,5), 5 guld (6,6,5,5,5), 5 silver (5,5,5,5,5), 7 tyg (5,3,3,2,2,1,1), 7 kryddor (5,3,3,2,2,1,1), 9 läder (4,3,2,1,1,1,1,1,1).",
-            "18 bonuspolletter (6 st per storlek, hemliga tills ronden är slut): 3-kort värde 1-3, 4-kort värde 4-6, 5+-kort värde 8-10.",
+            "38 varutokens: 5 diamant (7,7,5,5,5), 5 guld (6,6,5,5,5), 5 silver (5,5,5,5,5), 7 tyg (5,3,3,2,2,1,1), 7 kryddor (5,3,3,2,2,1,1), 9 läder (4,3,2,1,1,1,1,1,1)."
+          ),
+          thumbRow(...SELLABLE_GOODS.map((good) => tokenThumb(good))),
+          list("18 bonuspolletter (6 st per storlek, hemliga tills ronden är slut): 3-kort värde 1-3, 4-kort värde 4-6, 5+-kort värde 8-10."),
+          thumbRow(bonusThumb(bonusThree, "3-korts bonus"), bonusThumb(bonusFour, "4-korts bonus"), bonusThumb(bonusFive, "5-korts bonus")),
+          list(
             "1 kameltoken värd 5 poäng till den med flest kameler i hjorden.",
             "3 Excellence-sigill - ett delas ut per rondvinst, och du behöver bara 2 för att vinna matchen."
           )

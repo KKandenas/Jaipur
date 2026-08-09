@@ -687,6 +687,41 @@ button {
   margin-bottom: 4px;
 }
 
+.rules-thumb-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.rules-thumb {
+  flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+.rules-thumb--card {
+  width: 40px;
+  height: 56px;
+  object-fit: contain;
+  background-color: #e8e4dd;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.rules-thumb--token {
+  width: 34px;
+  height: 34px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+}
+
+.rules-thumb-caption {
+  color: rgba(58, 42, 28, 0.65);
+  font-size: 0.8rem !important;
+}
+
 /* ---------- Larger screens (tablets, e.g. iPad) ---------- */
 
 @media (min-width: 640px) {
