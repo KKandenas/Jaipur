@@ -26,7 +26,7 @@ service cloud.firestore {
         && request.resource.data.status == 'waiting'
         && request.resource.data.state == null;
 
-      allow update: if isSignedIn() && (isJoinTransition() || isPlayerMoveTransition());
+      allow update: if isSignedIn() && (isJoinTransition() || isPlayerMoveTransition() || isBonusRevealTransition());
 
       allow delete: if isSignedIn()
         && resource.data.status == 'waiting'
@@ -71,5 +71,21 @@ service cloud.firestore {
       && request.resource.data.createdAt == resource.data.createdAt
       && request.resource.data.state != null
       && (request.resource.data.status == 'active' || request.resource.data.status == 'finished');
+  }
+
+  // Flipping a bonus token face-up: allowed by either seated player, and
+  // allowed even after the match's deciding round has already set status to
+  // 'finished' (the win is decided in the same move that ends the last
+  // round, before either player has had a chance to flip their tokens).
+  // Only `state`/`updatedAt` may change - status itself stays put here.
+  function isBonusRevealTransition() {
+    return (resource.data.status == 'active' || resource.data.status == 'finished')
+      && isPlayer()
+      && request.resource.data.hostID == resource.data.hostID
+      && request.resource.data.hostName == resource.data.hostName
+      && request.resource.data.playerIDs == resource.data.playerIDs
+      && request.resource.data.createdAt == resource.data.createdAt
+      && request.resource.data.status == resource.data.status
+      && request.resource.data.state != null;
   }
 }

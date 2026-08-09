@@ -1,4 +1,4 @@
-import { bonusTier, findPlayer, roundResultTotal, type GameState, type RoundResult } from "../../engine";
+import { bonusTier, findPlayer, roundResultTotal, type GameState, type Player, type RoundResult } from "../../engine";
 import bonusThree from "../../assets/bonus/three.png";
 import bonusFour from "../../assets/bonus/four.png";
 import bonusFive from "../../assets/bonus/five.png";
@@ -6,18 +6,12 @@ import { h } from "../h";
 
 const BONUS_TIER_IMAGE = { three: bonusThree, four: bonusFour, five: bonusFive };
 
-function bonusFlipRow(
-  tokens: number[],
-  roundNumber: number,
-  revealedKeys: Set<string>,
-  onToggle: (key: string) => void
-): HTMLElement {
+function bonusFlipRow(player: Player, onReveal: (playerID: string, tokenIndex: number) => void): HTMLElement {
   return h(
     "span",
     { class: "bonus-flip-row" },
-    tokens.map((value, index) => {
-      const key = `${roundNumber}-${index}`;
-      const revealed = revealedKeys.has(key);
+    player.wonBonusTokens.map((value, index) => {
+      const revealed = player.revealedBonusTokenIndices.includes(index);
       const tokenImage = BONUS_TIER_IMAGE[bonusTier(value)];
       return h(
         "button",
@@ -26,7 +20,7 @@ function bonusFlipRow(
           type: "button",
           style: { "--card-image": `url(${tokenImage})` },
           title: revealed ? undefined : "Tap to reveal",
-          onclick: () => onToggle(key)
+          onclick: revealed ? undefined : () => onReveal(player.id, index)
         },
         revealed ? String(value) : "?"
       );
@@ -39,8 +33,7 @@ export function roundEndOverlay(
   myID: string,
   options: {
     busy: boolean;
-    revealedBonusTokenKeys: Set<string>;
-    onToggleBonusToken: (key: string) => void;
+    onRevealBonusToken: (playerID: string, tokenIndex: number) => void;
     onNextRound: () => void;
     onLeave: () => void;
   }
@@ -49,16 +42,7 @@ export function roundEndOverlay(
     const player = findPlayer(state, result.playerID);
     const name = player?.displayName ?? "Player";
     const isMe = result.playerID === myID;
-
-    const tokenKeys = player ? player.wonBonusTokens.map((_, i) => `${state.roundNumber}-${i}`) : [];
-    const allRevealed = tokenKeys.every((key) => options.revealedBonusTokenKeys.has(key));
-
-    const bonusPart: HTMLElement | string =
-      isMe && player
-        ? bonusFlipRow(player.wonBonusTokens, state.roundNumber, options.revealedBonusTokenKeys, options.onToggleBonusToken)
-        : `${result.bonusValue} ₹`;
-
-    const totalKnown = !isMe || allRevealed;
+    const allRevealed = player ? player.revealedBonusTokenIndices.length >= player.wonBonusTokens.length : true;
 
     return h(
       "div",
@@ -67,23 +51,19 @@ export function roundEndOverlay(
         "div",
         { class: "round-end__row-header" },
         h("span", { class: "round-end__row-name" }, isMe ? `You (${name})` : name),
-        h(
-          "span",
-          { class: "round-end__row-total" },
-          totalKnown ? `${roundResultTotal(result)} ₹` : "? ₹"
-        )
+        h("span", { class: "round-end__row-total" }, allRevealed ? `${roundResultTotal(result)} ₹` : "? ₹")
       ),
       h(
         "div",
         { class: "round-end__row-breakdown" },
         h("span", {}, `${result.goodsValue} ₹ goods`),
         h("span", {}, "+"),
-        bonusPart,
+        player ? bonusFlipRow(player, options.onRevealBonusToken) : `${result.bonusValue} ₹`,
         h("span", {}, "bonus"),
         h("span", {}, "+"),
         h("span", {}, `${result.camelBonus} ₹ camel`)
       ),
-      isMe && !allRevealed ? h("p", { class: "round-end__hint" }, "Tap your bonus tokens to reveal them") : null
+      !allRevealed ? h("p", { class: "round-end__hint" }, "Tap the bonus tokens to reveal them") : null
     );
   };
 

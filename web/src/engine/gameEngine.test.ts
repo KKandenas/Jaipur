@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { apply, newGame, startNextRound } from "./gameEngine";
+import { apply, newGame, revealBonusToken, startNextRound } from "./gameEngine";
 import { seededRandom } from "./rng";
 import { newTokenBank, takeTokens } from "./tokenBank";
 import { GameError, newPlayer, type Card, type GameState, type RoundResult } from "./types";
@@ -320,6 +320,50 @@ describe("startNextRound", () => {
     expect(next.players[0].hand.length + next.players[0].camelCount).toBe(5);
     expect(next.players[1].hand.length + next.players[1].camelCount).toBe(5);
     expect(next.currentPlayerID).toBe("B");
+  });
+
+  it("resets revealedBonusTokenIndices for a fresh round", () => {
+    const state = fixtureState();
+    state.players[0].wonBonusTokens = [3, 6];
+    state.players[0].revealedBonusTokenIndices = [0];
+    const next = startNextRound(state, seededRandom(42));
+    expect(next.players[0].wonBonusTokens).toEqual([]);
+    expect(next.players[0].revealedBonusTokenIndices).toEqual([]);
+  });
+});
+
+describe("revealBonusToken", () => {
+  it("flips a token face-up, and is idempotent", () => {
+    const state = fixtureState();
+    state.players[0].wonBonusTokens = [3, 6, 10];
+
+    const next = revealBonusToken(state, "A", 1);
+    expect(next.players[0].revealedBonusTokenIndices).toEqual([1]);
+
+    const next2 = revealBonusToken(next, "A", 1);
+    expect(next2.players[0].revealedBonusTokenIndices).toEqual([1]);
+  });
+
+  it("is not gated by turn order, round end, or game over", () => {
+    const state = fixtureState();
+    state.players[0].wonBonusTokens = [3];
+    state.players[1].wonBonusTokens = [6];
+    state.currentPlayerID = "A";
+    state.roundEndReason = "threeStacksExhausted";
+    state.winnerID = "B";
+
+    // Player A (not the winner, and not whose turn it notionally is for a
+    // regular move) can still flip player B's token.
+    const next = revealBonusToken(state, "B", 0);
+    expect(next.players[1].revealedBonusTokenIndices).toEqual([0]);
+  });
+
+  it("ignores an out-of-range index or unknown player", () => {
+    const state = fixtureState();
+    state.players[0].wonBonusTokens = [3];
+
+    expect(revealBonusToken(state, "A", 5).players[0].revealedBonusTokenIndices).toEqual([]);
+    expect(revealBonusToken(state, "nobody", 0)).toEqual(state);
   });
 });
 

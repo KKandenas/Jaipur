@@ -56,6 +56,7 @@ public enum GameEngine {
             reset.camelCount = 0
             reset.wonTokens = [:]
             reset.wonBonusTokens = []
+            reset.revealedBonusTokenIndices = []
             return reset
         }
         let (market, drawPile) = dealMarketAndDrawPile(rng: &rng)
@@ -122,6 +123,21 @@ public enum GameEngine {
         drawPile.removeFirst(dealt.count)
         let hand = dealt.filter { $0.good != .camel }
         return (hand, dealt.count - hand.count)
+    }
+
+    /// Flips one of `playerID`'s bonus tokens face-up. Deliberately not gated by
+    /// turn order or round/game-over state - either player can flip either
+    /// player's tokens at any point once they're won, matching the physical
+    /// game's simultaneous reveal at scoring time. Idempotent: flipping an
+    /// already-revealed token is a no-op.
+    public static func revealBonusToken(_ playerID: String, tokenIndex: Int, in input: GameState) -> GameState {
+        var state = input
+        guard let playerIndex = state.index(of: playerID) else { return state }
+        guard tokenIndex >= 0, tokenIndex < state.players[playerIndex].wonBonusTokens.count else { return state }
+        if !state.players[playerIndex].revealedBonusTokenIndices.contains(tokenIndex) {
+            state.players[playerIndex].revealedBonusTokenIndices.append(tokenIndex)
+        }
+        return state
     }
 
     // MARK: - Actions

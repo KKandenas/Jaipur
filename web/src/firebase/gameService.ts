@@ -9,7 +9,13 @@ import {
 } from "firebase/firestore";
 import { requireDb } from "./app";
 import type { GameDocument } from "./gameDocument";
-import { apply, newGame, startNextRound as engineStartNextRound, type GameAction } from "../engine";
+import {
+  apply,
+  newGame,
+  revealBonusToken as engineRevealBonusToken,
+  startNextRound as engineStartNextRound,
+  type GameAction
+} from "../engine";
 
 export class GameServiceError extends Error {
   constructor(message: string) {
@@ -103,6 +109,20 @@ export async function applyAction(action: GameAction, code: string, playerID: st
       status: nextState.winnerID ? "finished" : document.status,
       updatedAt: Date.now()
     };
+    transaction.set(ref, next);
+  });
+}
+
+export async function revealBonusToken(code: string, playerID: string, tokenIndex: number): Promise<void> {
+  const ref = gameRef(code);
+  await runTransaction(requireDb(), async (transaction) => {
+    const snapshot = await transaction.get(ref);
+    if (!snapshot.exists()) throw new GameServiceError("This game no longer exists.");
+    const document = snapshot.data() as GameDocument;
+    if (!document.state) throw new GameServiceError("The game hasn't started yet.");
+
+    const nextState = engineRevealBonusToken(document.state, playerID, tokenIndex);
+    const next: GameDocument = { ...document, state: nextState, updatedAt: Date.now() };
     transaction.set(ref, next);
   });
 }

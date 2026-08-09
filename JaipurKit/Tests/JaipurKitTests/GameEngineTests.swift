@@ -289,6 +289,51 @@ final class GameEngineTests: XCTestCase {
         XCTAssertEqual(next.currentPlayerID, "B")
     }
 
+    func testStartNextRoundResetsRevealedBonusTokenIndices() {
+        var state = makeFixtureState()
+        state.players[0].wonBonusTokens = [3, 6]
+        state.players[0].revealedBonusTokenIndices = [0]
+
+        let next = GameEngine.startNextRound(from: state, rng: SeededGenerator(seed: 42))
+        XCTAssertEqual(next.players[0].wonBonusTokens, [])
+        XCTAssertEqual(next.players[0].revealedBonusTokenIndices, [])
+    }
+
+    // MARK: - Bonus token reveal
+
+    func testRevealBonusTokenFlipsItAndIsIdempotent() {
+        var state = makeFixtureState()
+        state.players[0].wonBonusTokens = [3, 6, 10]
+
+        let next = GameEngine.revealBonusToken("A", tokenIndex: 1, in: state)
+        XCTAssertEqual(next.players[0].revealedBonusTokenIndices, [1])
+
+        let next2 = GameEngine.revealBonusToken("A", tokenIndex: 1, in: next)
+        XCTAssertEqual(next2.players[0].revealedBonusTokenIndices, [1])
+    }
+
+    func testRevealBonusTokenIsNotGatedByTurnOrRoundOrGameOver() {
+        var state = makeFixtureState()
+        state.players[0].wonBonusTokens = [3]
+        state.players[1].wonBonusTokens = [6]
+        state.currentPlayerID = "A"
+        state.roundEndReason = .threeStacksExhausted
+        state.winnerID = "B"
+
+        // Player A can still flip player B's token, even though it's not a
+        // normal move and the match is already over.
+        let next = GameEngine.revealBonusToken("B", tokenIndex: 0, in: state)
+        XCTAssertEqual(next.players[1].revealedBonusTokenIndices, [0])
+    }
+
+    func testRevealBonusTokenIgnoresOutOfRangeIndexOrUnknownPlayer() {
+        var state = makeFixtureState()
+        state.players[0].wonBonusTokens = [3]
+
+        XCTAssertEqual(GameEngine.revealBonusToken("A", tokenIndex: 5, in: state).players[0].revealedBonusTokenIndices, [])
+        XCTAssertEqual(GameEngine.revealBonusToken("nobody", tokenIndex: 0, in: state), state)
+    }
+
     // MARK: - Fixtures
 
     /// A hand-assembled, deterministic mid-game state useful for exercising single actions

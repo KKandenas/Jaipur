@@ -23,14 +23,6 @@ export interface AppState {
   gameError: string | null;
 
   showRules: boolean;
-
-  /**
-   * Bonus tokens are secret until a round ends, at which point the winning
-   * player flips each of their own tokens over one at a time. Purely a local
-   * UI reveal, never synced - keyed by `${roundNumber}-${index within
-   * wonBonusTokens}` so it can never collide across rounds.
-   */
-  revealedBonusTokenKeys: Set<string>;
 }
 
 type Listener = () => void;
@@ -59,8 +51,7 @@ export const state: AppState = {
   selectedSellIDs: new Set(),
   gameBusy: false,
   gameError: null,
-  showRules: false,
-  revealedBonusTokenKeys: new Set()
+  showRules: false
 };
 
 export function subscribe(listener: Listener): () => void {
@@ -103,13 +94,6 @@ export function openRules(): void {
 
 export function closeRules(): void {
   setState({ showRules: false });
-}
-
-export function toggleBonusTokenRevealed(key: string): void {
-  const next = new Set(state.revealedBonusTokenKeys);
-  if (next.has(key)) next.delete(key);
-  else next.add(key);
-  setState({ revealedBonusTokenKeys: next });
 }
 
 export function clearSelections(): void {
