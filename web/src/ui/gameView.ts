@@ -202,6 +202,7 @@ export function gameView(): HTMLElement {
         })
       : null,
     myPlayer ? playerBarView(myPlayer, { isCurrentTurn: gameState.currentPlayerID === myPlayer.id, showHandCount: false }) : null,
+    state.gameError ? h("p", { class: "game__error" }, state.gameError) : null,
     actionBarView({
       mode: state.mode,
       isMyTurn: myTurn,
@@ -225,8 +226,7 @@ export function gameView(): HTMLElement {
         }
       },
       onCancel: () => clearSelections()
-    }),
-    state.gameError ? h("p", { class: "game__error" }, state.gameError) : null
+    })
   );
 
   if (gameState.roundEndReason && state.uid) {
