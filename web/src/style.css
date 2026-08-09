@@ -520,31 +520,58 @@ button {
 .round-end__results {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  background: rgba(0, 0, 0, 0.06);
-  border-radius: 12px;
-  padding: 12px;
+  gap: 10px;
   margin: 16px 0;
 }
 
 .round-end__row {
   display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+.round-end__row--me {
+  background: rgba(193, 104, 47, 0.12);
+  border: 1px solid rgba(193, 104, 47, 0.35);
+}
+
+.round-end__row-header {
+  display: flex;
+  align-items: baseline;
   justify-content: space-between;
   gap: 8px;
-  font-size: 0.85rem;
 }
 
 .round-end__row-name {
   font-weight: 700;
+  font-size: 0.95rem;
 }
 
-.round-end__row-score {
-  display: inline-flex;
+.round-end__row-total {
+  font-weight: 800;
+  font-size: 1.6rem;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.round-end__row-breakdown {
+  display: flex;
   align-items: center;
   flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 2px;
-  text-align: right;
+  gap: 5px;
+  font-size: 0.78rem;
+  color: #6b5847;
+}
+
+.round-end__hint {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--accent);
+  font-weight: 600;
 }
 
 .bonus-flip-row {
