@@ -1,8 +1,20 @@
 import { observeGame } from "./firebase/gameService";
-import { clearSelections, setState, state } from "./state";
+import { clearSelections, setState, showMoveToast, state } from "./state";
 
 let unsubscribe: (() => void) | null = null;
 let subscribedCode: string | null = null;
+
+/**
+ * Newest `lastMove.at` already accounted for, per game code - keyed by code
+ * (not reset on the periodic force-resubscribe) so a forced resync while
+ * you're actively looking at the game still surfaces a toast for a move
+ * that lands during it. Only the very first snapshot this tab ever sees for
+ * a given code is treated specially (see below): that one just records the
+ * timestamp without popping a toast, since it may describe a move you
+ * already watched happen (or one from while the app was closed/backgrounded)
+ * - its result is already sitting on the board.
+ */
+const acknowledgedMoveAt: Record<string, number> = {};
 
 /**
  * Keeps the Firestore listener in sync with `state.gameCode`. Cheap to call
@@ -35,6 +47,16 @@ export function syncGameSubscription(force = false): void {
       setState({ gameDoc: doc });
       if (doc.state && doc.state.currentPlayerID !== state.uid) {
         clearSelections();
+      }
+
+      const move = doc.lastMove;
+      const code = state.gameCode;
+      if (move && code && move.playerID !== state.uid) {
+        const seenBefore = code in acknowledgedMoveAt;
+        if (!seenBefore || move.at > acknowledgedMoveAt[code]) {
+          acknowledgedMoveAt[code] = move.at;
+          if (seenBefore) showMoveToast(move.text);
+        }
       }
     });
   } catch (error) {

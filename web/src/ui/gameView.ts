@@ -6,6 +6,7 @@ import { actionBarView } from "./components/actionBar";
 import { describeError } from "./errorMessages";
 import { handView } from "./components/hand";
 import { marketView } from "./components/market";
+import { describeAction } from "./moveDescription";
 import { playerBarView } from "./components/playerBar";
 import { roundEndOverlay } from "./components/roundEndOverlay";
 import { rulesModalView } from "./components/rulesModal";
@@ -51,10 +52,12 @@ function canConfirmSell(gameState: GameState): boolean {
 }
 
 async function perform(action: GameAction): Promise<void> {
-  if (!state.gameCode || !state.uid || state.gameBusy) return;
+  const gameState = currentGameState();
+  if (!state.gameCode || !state.uid || !gameState || state.gameBusy) return;
   setState({ gameBusy: true, gameError: null });
   try {
-    await applyAction(action, state.gameCode, state.uid);
+    const moveText = describeAction(action, state.uid, gameState);
+    await applyAction(action, state.gameCode, state.uid, moveText);
     clearSelections();
   } catch (error) {
     setState({ gameError: describeError(error) });
@@ -242,6 +245,10 @@ export function gameView(): HTMLElement {
 
   if (state.showRules) {
     root.appendChild(rulesModalView());
+  }
+
+  if (state.moveToast) {
+    root.appendChild(h("div", { class: "move-toast" }, state.moveToast));
   }
 
   return root;
