@@ -291,6 +291,13 @@ button {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
+.player-bar__icon--bonus {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .player-bar__stat--value {
   color: #ffd76a;
 }
@@ -792,6 +799,11 @@ button {
   .player-bar__icon {
     width: 22px;
     height: 30px;
+  }
+
+  .player-bar__icon--bonus {
+    width: 24px;
+    height: 24px;
   }
 
   .lobby-card {
