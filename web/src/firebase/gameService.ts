@@ -94,7 +94,7 @@ export function observeGame(code: string, onChange: (doc: GameDocument) => void)
   });
 }
 
-export async function applyAction(action: GameAction, code: string, playerID: string): Promise<void> {
+export async function applyAction(action: GameAction, code: string, playerID: string, moveText: string): Promise<void> {
   const ref = gameRef(code);
   await runTransaction(requireDb(), async (transaction) => {
     const snapshot = await transaction.get(ref);
@@ -103,11 +103,13 @@ export async function applyAction(action: GameAction, code: string, playerID: st
     if (!document.state) throw new GameServiceError("Spelet har inte startat än.");
 
     const nextState = apply(action, playerID, document.state);
+    const now = Date.now();
     const next: GameDocument = {
       ...document,
       state: nextState,
       status: nextState.winnerID ? "finished" : document.status,
-      updatedAt: Date.now()
+      updatedAt: now,
+      lastMove: { playerID, text: moveText, at: now }
     };
     transaction.set(ref, next);
   });

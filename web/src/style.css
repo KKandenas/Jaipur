@@ -238,6 +238,47 @@ button {
   text-align: center;
 }
 
+.move-toast {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 56px);
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: calc(100% - 32px);
+  background: rgba(20, 12, 6, 0.88);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 10px 18px;
+  border-radius: 999px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  z-index: 8;
+  /* Never intercept taps, even mid-animation, and never trap the "next"
+     move behind it - it's purely informational. */
+  pointer-events: none;
+  animation: move-toast-in 0.25s ease-out, move-toast-out 0.3s ease-in 3.7s forwards;
+}
+
+@keyframes move-toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes move-toast-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 /* ---------- Player bar ---------- */
 
 .player-bar {

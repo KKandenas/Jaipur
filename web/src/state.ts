@@ -23,6 +23,8 @@ export interface AppState {
   gameError: string | null;
 
   showRules: boolean;
+
+  moveToast: string | null;
 }
 
 type Listener = () => void;
@@ -51,7 +53,8 @@ export const state: AppState = {
   selectedSellIDs: new Set(),
   gameBusy: false,
   gameError: null,
-  showRules: false
+  showRules: false,
+  moveToast: null
 };
 
 export function subscribe(listener: Listener): () => void {
@@ -94,6 +97,18 @@ export function openRules(): void {
 
 export function closeRules(): void {
   setState({ showRules: false });
+}
+
+let moveToastTimer: ReturnType<typeof setTimeout> | null = null;
+
+/** Shows a transient "what just happened" toast, replacing/re-timing any toast already showing. */
+export function showMoveToast(text: string): void {
+  if (moveToastTimer) clearTimeout(moveToastTimer);
+  setState({ moveToast: text });
+  moveToastTimer = setTimeout(() => {
+    moveToastTimer = null;
+    setState({ moveToast: null });
+  }, 4000);
 }
 
 export function clearSelections(): void {
