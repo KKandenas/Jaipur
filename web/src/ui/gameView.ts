@@ -170,7 +170,7 @@ export function gameView(): HTMLElement {
 
   const root = h(
     "div",
-    { class: "game" },
+    { class: "game", "data-scroll-id": "game" },
     h(
       "div",
       { class: "game__topbar" },
