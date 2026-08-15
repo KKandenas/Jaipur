@@ -52,7 +52,7 @@ export function rulesModalView(): HTMLElement {
       ),
       h(
         "div",
-        { class: "rules__body" },
+        { class: "rules__body", "data-scroll-id": "rules-body" },
         section(
           "Mål",
           h("p", {}, "Handla varor mot rupier under upp till 3 ronder. Den som vinner 2 ronder vinner matchen.")

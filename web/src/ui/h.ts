@@ -69,8 +69,12 @@ export function clear(el: HTMLElement): void {
  * Replaces `root`'s children with `child`. Since there's no VDOM diffing here,
  * every render rebuilds the whole subtree - which would normally steal focus
  * (and dismiss the on-screen keyboard on iOS) out from under whatever input
- * the player is mid-typing into. This preserves focus + cursor position
- * across the rebuild for any input/textarea carrying a stable `id`.
+ * the player is mid-typing into, and reset every scroll position back to 0
+ * (most noticeably the rules text, but this hits any long scrollable area).
+ * Renders happen constantly - on every Firestore snapshot, not just the
+ * periodic forced resync - so this preserves both across the rebuild: focus
+ * + cursor for any input/textarea carrying a stable `id`, and `scrollTop`
+ * for any element carrying a stable `data-scroll-id`.
  */
 export function mount(root: HTMLElement, child: Node): void {
   const active = document.activeElement;
@@ -84,6 +88,11 @@ export function mount(root: HTMLElement, child: Node): void {
     selectionEnd = active.selectionEnd;
   }
 
+  const scrollPositions = new Map<string, number>();
+  for (const el of root.querySelectorAll<HTMLElement>("[data-scroll-id]")) {
+    if (el.scrollTop > 0) scrollPositions.set(el.dataset.scrollId as string, el.scrollTop);
+  }
+
   clear(root);
   root.appendChild(child);
 
@@ -95,5 +104,10 @@ export function mount(root: HTMLElement, child: Node): void {
         next.setSelectionRange(selectionStart, selectionEnd);
       }
     }
+  }
+
+  for (const [key, scrollTop] of scrollPositions) {
+    const next = root.querySelector<HTMLElement>(`[data-scroll-id="${CSS.escape(key)}"]`);
+    if (next) next.scrollTop = scrollTop;
   }
 }
