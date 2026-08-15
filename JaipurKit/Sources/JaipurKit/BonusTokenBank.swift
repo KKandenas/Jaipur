@@ -18,6 +18,20 @@ public struct BonusTokenBank: Codable, Equatable, Sendable {
         self.saleOfFiveOrMore = saleOfFiveOrMore
     }
 
+    /// A fresh bank with each of the three stacks independently shuffled,
+    /// matching the physical game's face-down piles. The plain `init()` above
+    /// leaves them in their fixed, descending-value order, which would make a
+    /// token's value fully predictable from draw order alone (e.g. the first
+    /// sale of 3 always getting the top value 3 token) - defeating the point
+    /// of it being hidden until reveal.
+    public static func shuffled(using rng: inout RandomNumberGenerator) -> BonusTokenBank {
+        BonusTokenBank(
+            saleOfThree: [3, 3, 2, 2, 1, 1].shuffled(using: &rng),
+            saleOfFour: [6, 6, 5, 5, 4, 4].shuffled(using: &rng),
+            saleOfFiveOrMore: [10, 10, 9, 9, 8, 8].shuffled(using: &rng)
+        )
+    }
+
     /// Draws the next bonus token for selling `cardCount` cards at once, if any remain.
     /// Returns nil for sales of fewer than 3 cards (no bonus applies) or an exhausted stack.
     public mutating func drawBonus(forCardsSold cardCount: Int) -> Int? {

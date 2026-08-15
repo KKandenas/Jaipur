@@ -1,16 +1,21 @@
+import { defaultRandom, shuffled, type RandomSource } from "./rng";
 import type { BonusTokenBank } from "./types";
 
 /**
  * The three bonus-token stacks awarded when a player sells 3, 4, or 5+ cards
  * at once. 18 tokens total, confirmed against the physical game's component
  * list: 6 tokens per tier, two of each value (3-card: 1-3, 4-card: 4-6,
- * 5-card: 8-10).
+ * 5-card: 8-10). Each stack is shuffled independently, matching the physical
+ * game's face-down piles - drawing from an unshuffled stack would make the
+ * value fully predictable from draw order alone (e.g. the first sale of 3
+ * always getting the top value 3 token), defeating the point of it being
+ * hidden until reveal.
  */
-export function newBonusTokenBank(): BonusTokenBank {
+export function newBonusTokenBank(random: RandomSource = defaultRandom): BonusTokenBank {
   return {
-    saleOfThree: [3, 3, 2, 2, 1, 1],
-    saleOfFour: [6, 6, 5, 5, 4, 4],
-    saleOfFiveOrMore: [10, 10, 9, 9, 8, 8]
+    saleOfThree: shuffled([3, 3, 2, 2, 1, 1], random),
+    saleOfFour: shuffled([6, 6, 5, 5, 4, 4], random),
+    saleOfFiveOrMore: shuffled([10, 10, 9, 9, 8, 8], random)
   };
 }
 

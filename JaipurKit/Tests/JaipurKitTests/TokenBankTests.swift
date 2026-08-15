@@ -45,4 +45,29 @@ final class TokenBankTests: XCTestCase {
         XCTAssertNil(bonus.drawBonus(forCardsSold: 3))
         XCTAssertNil(bonus.drawBonus(forCardsSold: 4))
     }
+
+    func testShuffledBonusTokenBankKeepsTheSameValuesButNotAlwaysTheSameOrder() {
+        var rng: RandomNumberGenerator = SeededGenerator(seed: 1)
+        let bank = BonusTokenBank.shuffled(using: &rng)
+        XCTAssertEqual(bank.saleOfThree.sorted(), [1, 1, 2, 2, 3, 3])
+        XCTAssertEqual(bank.saleOfFour.sorted(), [4, 4, 5, 5, 6, 6])
+        XCTAssertEqual(bank.saleOfFiveOrMore.sorted(), [8, 8, 9, 9, 10, 10])
+
+        // Vanishingly unlikely for every one of many seeds to reproduce the
+        // exact unshuffled order - if this ever fails, the shuffle broke.
+        let allUnshuffled = (0..<20).allSatisfy { seed -> Bool in
+            var seededRng: RandomNumberGenerator = SeededGenerator(seed: UInt64(seed))
+            let b = BonusTokenBank.shuffled(using: &seededRng)
+            return b.saleOfThree == [3, 3, 2, 2, 1, 1]
+                && b.saleOfFour == [6, 6, 5, 5, 4, 4]
+                && b.saleOfFiveOrMore == [10, 10, 9, 9, 8, 8]
+        }
+        XCTAssertFalse(allUnshuffled)
+    }
+
+    func testShuffledBonusTokenBankIsReproducibleForASeed() {
+        var rngA: RandomNumberGenerator = SeededGenerator(seed: 7)
+        var rngB: RandomNumberGenerator = SeededGenerator(seed: 7)
+        XCTAssertEqual(BonusTokenBank.shuffled(using: &rngA), BonusTokenBank.shuffled(using: &rngB))
+    }
 }

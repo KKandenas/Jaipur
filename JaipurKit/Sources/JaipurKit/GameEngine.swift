@@ -39,6 +39,7 @@ public enum GameEngine {
             players: players,
             market: market,
             drawPile: remaining,
+            bonusTokenBank: BonusTokenBank.shuffled(using: &rng),
             currentPlayerID: startingPlayer,
             roundNumber: 1
         )
@@ -75,7 +76,7 @@ public enum GameEngine {
             market: market,
             drawPile: remaining,
             tokenBank: TokenBank(),
-            bonusTokenBank: BonusTokenBank(),
+            bonusTokenBank: BonusTokenBank.shuffled(using: &rng),
             currentPlayerID: starter,
             roundNumber: state.roundNumber + 1
         )
