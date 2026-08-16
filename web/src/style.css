@@ -350,8 +350,11 @@ button {
 /* ---------- Cards ---------- */
 
 .card {
-  width: 58px;
+  /* Locked to the source card art's own proportions (~178x299) via
+     aspect-ratio, with only height set explicitly per breakpoint below -
+     that way width is always derived, so the two can never drift apart. */
   height: 82px;
+  aspect-ratio: 178 / 299;
   border-radius: 10px;
   border: 1px solid rgba(0, 0, 0, 0.15);
   background-color: #e8e4dd;
@@ -418,7 +421,7 @@ button {
   width: auto;
   height: auto;
   max-width: 72px;
-  aspect-ratio: 58 / 82;
+  aspect-ratio: 178 / 299;
 }
 
 /* ---------- Tokens ---------- */
@@ -782,8 +785,7 @@ button {
   }
 
   .card {
-    width: 84px;
-    height: 118px;
+    height: 128px;
   }
 
   .hand {
@@ -791,7 +793,7 @@ button {
   }
 
   .hand .card {
-    max-width: 110px;
+    max-width: 76px;
   }
 
   .market {
@@ -864,8 +866,7 @@ button {
   }
 
   .card {
-    width: 108px;
-    height: 152px;
+    height: 166px;
   }
 
   .hand {
@@ -873,7 +874,7 @@ button {
   }
 
   .hand .card {
-    max-width: 140px;
+    max-width: 99px;
   }
 
   .market {
