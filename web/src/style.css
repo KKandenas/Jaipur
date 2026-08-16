@@ -218,7 +218,6 @@ button {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-height: 0;
   justify-content: center;
 }
 
@@ -853,5 +852,87 @@ button {
 
   .overlay__card {
     max-width: 440px;
+  }
+}
+
+/* ---------- Wide screens (landscape iPad and up) ---------- */
+
+@media (min-width: 1000px) {
+  .game {
+    max-width: 1300px;
+    gap: 20px;
+  }
+
+  .card {
+    width: 108px;
+    height: 152px;
+  }
+
+  .hand {
+    gap: 14px;
+  }
+
+  .hand .card {
+    max-width: 140px;
+  }
+
+  .market {
+    gap: 16px;
+    padding: 20px;
+  }
+
+  .token-tray {
+    max-width: 620px;
+    gap: 14px;
+  }
+
+  .token-chip__value {
+    font-size: 1.3rem;
+  }
+
+  .token-chip__count {
+    width: 26px;
+    height: 26px;
+    font-size: 0.85rem;
+    bottom: -7px;
+    right: -7px;
+  }
+
+  .bonus-tray {
+    gap: 22px;
+  }
+
+  .bonus-chip__title {
+    font-size: 0.9rem;
+  }
+
+  .bonus-chip__value {
+    width: 56px;
+    height: 56px;
+    font-size: 1.3rem;
+  }
+
+  .bonus-flip-chip {
+    width: 52px;
+    height: 52px;
+    font-size: 1.15rem;
+  }
+
+  .player-bar {
+    font-size: 1.1rem;
+  }
+
+  .player-bar__icon {
+    width: 28px;
+    height: 38px;
+  }
+
+  .player-bar__icon--bonus {
+    width: 30px;
+    height: 30px;
+  }
+
+  .overlay__card {
+    max-width: 520px;
   }
 }
