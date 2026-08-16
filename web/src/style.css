@@ -785,67 +785,71 @@ button {
   }
 
   .card {
-    height: 128px;
+    height: 160px;
   }
 
   .hand {
-    gap: 10px;
+    gap: 12px;
   }
 
   .hand .card {
-    max-width: 76px;
+    max-width: 95px;
   }
 
   .market {
-    gap: 12px;
-    padding: 16px;
+    gap: 14px;
+    padding: 18px;
   }
 
   .token-tray {
-    max-width: 480px;
-    gap: 10px;
+    max-width: 560px;
+    gap: 12px;
   }
 
   .token-chip__value {
-    font-size: 1.1rem;
+    font-size: 1.25rem;
   }
 
   .token-chip__count {
-    width: 22px;
-    height: 22px;
-    font-size: 0.75rem;
+    width: 25px;
+    height: 25px;
+    font-size: 0.8rem;
     bottom: -6px;
     right: -6px;
   }
 
   .bonus-tray {
-    gap: 16px;
+    gap: 20px;
   }
 
   .bonus-chip__title {
-    font-size: 0.8rem;
+    font-size: 0.88rem;
   }
 
   .bonus-chip__value {
-    width: 44px;
-    height: 44px;
-    font-size: 1.1rem;
+    width: 52px;
+    height: 52px;
+    font-size: 1.25rem;
   }
 
   .bonus-flip-chip {
-    width: 42px;
-    height: 42px;
-    font-size: 1rem;
+    width: 48px;
+    height: 48px;
+    font-size: 1.1rem;
+  }
+
+  .player-bar {
+    font-size: 1.05rem;
   }
 
   .player-bar__icon {
-    width: 22px;
-    height: 30px;
+    width: 26px;
+    height: 35px;
   }
 
   .player-bar__icon--bonus {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
   }
 
   .lobby-card {
@@ -853,7 +857,7 @@ button {
   }
 
   .overlay__card {
-    max-width: 440px;
+    max-width: 480px;
   }
 }
 
@@ -866,7 +870,7 @@ button {
   }
 
   .card {
-    height: 166px;
+    height: 180px;
   }
 
   .hand {
@@ -874,7 +878,7 @@ button {
   }
 
   .hand .card {
-    max-width: 99px;
+    max-width: 107px;
   }
 
   .market {
@@ -883,17 +887,17 @@ button {
   }
 
   .token-tray {
-    max-width: 620px;
+    max-width: 650px;
     gap: 14px;
   }
 
   .token-chip__value {
-    font-size: 1.3rem;
+    font-size: 1.35rem;
   }
 
   .token-chip__count {
-    width: 26px;
-    height: 26px;
+    width: 27px;
+    height: 27px;
     font-size: 0.85rem;
     bottom: -7px;
     right: -7px;
@@ -904,33 +908,33 @@ button {
   }
 
   .bonus-chip__title {
-    font-size: 0.9rem;
+    font-size: 0.92rem;
   }
 
   .bonus-chip__value {
-    width: 56px;
-    height: 56px;
-    font-size: 1.3rem;
+    width: 58px;
+    height: 58px;
+    font-size: 1.35rem;
   }
 
   .bonus-flip-chip {
-    width: 52px;
-    height: 52px;
-    font-size: 1.15rem;
+    width: 54px;
+    height: 54px;
+    font-size: 1.2rem;
   }
 
   .player-bar {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
   }
 
   .player-bar__icon {
-    width: 28px;
-    height: 38px;
+    width: 30px;
+    height: 40px;
   }
 
   .player-bar__icon--bonus {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
   }
 
   .overlay__card {
